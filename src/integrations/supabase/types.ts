@@ -14,7 +14,113 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      categories: {
+        Row: {
+          created_at: string
+          description: string | null
+          gradient: string | null
+          icon: string | null
+          id: string
+          name: string
+          slug: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          gradient?: string | null
+          icon?: string | null
+          id?: string
+          name: string
+          slug: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          gradient?: string | null
+          icon?: string | null
+          id?: string
+          name?: string
+          slug?: string
+        }
+        Relationships: []
+      }
+      products: {
+        Row: {
+          badge: string | null
+          best_seller: boolean
+          category_slug: string
+          created_at: string
+          description: string
+          discount_price: number
+          features: Json
+          gradient: string
+          id: string
+          in_stock: boolean
+          initials: string
+          is_new: boolean
+          long_description: string | null
+          name: string
+          original_price: number
+          rating: number
+          review_count: number
+          slug: string
+          tags: string[]
+          trending: boolean
+        }
+        Insert: {
+          badge?: string | null
+          best_seller?: boolean
+          category_slug: string
+          created_at?: string
+          description: string
+          discount_price: number
+          features?: Json
+          gradient: string
+          id?: string
+          in_stock?: boolean
+          initials: string
+          is_new?: boolean
+          long_description?: string | null
+          name: string
+          original_price: number
+          rating?: number
+          review_count?: number
+          slug: string
+          tags?: string[]
+          trending?: boolean
+        }
+        Update: {
+          badge?: string | null
+          best_seller?: boolean
+          category_slug?: string
+          created_at?: string
+          description?: string
+          discount_price?: number
+          features?: Json
+          gradient?: string
+          id?: string
+          in_stock?: boolean
+          initials?: string
+          is_new?: boolean
+          long_description?: string | null
+          name?: string
+          original_price?: number
+          rating?: number
+          review_count?: number
+          slug?: string
+          tags?: string[]
+          trending?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "products_category_slug_fkey"
+            columns: ["category_slug"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["slug"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
