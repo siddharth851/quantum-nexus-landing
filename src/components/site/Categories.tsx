@@ -1,20 +1,22 @@
-import { motion } from "framer-motion";
+import { Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import {
-  Brain, Tv, Palette, GraduationCap, Rocket, Code2, Megaphone, Film,
+  Brain, Tv, Palette, GraduationCap, Rocket, Code2, Megaphone, Film, type LucideIcon,
 } from "lucide-react";
+import { motion } from "framer-motion";
+import { fetchCategories } from "@/lib/products";
 
-const cats = [
-  { icon: Brain, name: "AI Tools", count: "1,240 items", from: "from-primary", to: "to-accent" },
-  { icon: Tv, name: "Streaming Apps", count: "320 items", from: "from-secondary", to: "to-primary" },
-  { icon: Palette, name: "Design Software", count: "640 items", from: "from-accent", to: "to-secondary" },
-  { icon: GraduationCap, name: "Learning Platforms", count: "920 items", from: "from-primary", to: "to-secondary" },
-  { icon: Rocket, name: "Productivity Apps", count: "510 items", from: "from-secondary", to: "to-accent" },
-  { icon: Code2, name: "Developer Tools", count: "780 items", from: "from-accent", to: "to-primary" },
-  { icon: Megaphone, name: "Marketing Tools", count: "430 items", from: "from-primary", to: "to-accent" },
-  { icon: Film, name: "Video Editing", count: "260 items", from: "from-secondary", to: "to-primary" },
-];
+const icons: Record<string, LucideIcon> = {
+  Brain, Tv, Palette, GraduationCap, Rocket, Code2, Megaphone, Film,
+};
 
 export function Categories() {
+  const { data: cats = [] } = useQuery({
+    queryKey: ["categories"],
+    queryFn: fetchCategories,
+    staleTime: 5 * 60_000,
+  });
+
   return (
     <section id="categories" className="relative py-20">
       <div className="mx-auto max-w-7xl px-4">
@@ -28,25 +30,32 @@ export function Categories() {
           </p>
         </div>
         <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-          {cats.map((c, i) => (
-            <motion.a
-              key={c.name}
-              href="#products"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: i * 0.05 }}
-              whileHover={{ y: -6 }}
-              className="group relative overflow-hidden rounded-2xl glass-strong p-6 transition hover:glow-primary"
-            >
-              <div className={`absolute -right-10 -top-10 h-32 w-32 rounded-full bg-gradient-to-br ${c.from} ${c.to} opacity-20 blur-2xl transition group-hover:opacity-50`} />
-              <div className={`mb-4 inline-grid h-12 w-12 place-items-center rounded-xl bg-gradient-to-br ${c.from} ${c.to} transition group-hover:scale-110 group-hover:rotate-3`}>
-                <c.icon className="h-6 w-6 text-white" />
-              </div>
-              <h3 className="text-lg font-semibold">{c.name}</h3>
-              <p className="mt-1 text-xs text-white/60">{c.count}</p>
-            </motion.a>
-          ))}
+          {cats.map((c, i) => {
+            const Icon = icons[c.icon ?? "Brain"] ?? Brain;
+            return (
+              <motion.div
+                key={c.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.05 }}
+                whileHover={{ y: -6 }}
+              >
+                <Link
+                  to="/category/$slug"
+                  params={{ slug: c.slug }}
+                  className="group relative block overflow-hidden rounded-2xl glass-strong p-6 transition hover:glow-primary"
+                >
+                  <div className={`absolute -right-10 -top-10 h-32 w-32 rounded-full bg-gradient-to-br ${c.gradient} opacity-20 blur-2xl transition group-hover:opacity-50`} />
+                  <div className={`mb-4 inline-grid h-12 w-12 place-items-center rounded-xl bg-gradient-to-br ${c.gradient} transition group-hover:scale-110 group-hover:rotate-3`}>
+                    <Icon className="h-6 w-6 text-white" />
+                  </div>
+                  <h3 className="text-lg font-semibold">{c.name}</h3>
+                  <p className="mt-1 line-clamp-1 text-xs text-white/60">{c.description}</p>
+                </Link>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>
