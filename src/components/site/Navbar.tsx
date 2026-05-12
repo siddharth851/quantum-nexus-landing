@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Search, ShoppingCart, ChevronDown, Menu, X, Sparkles, LogIn, Heart } from "lucide-react";
+import { Search, ShoppingCart, ChevronDown, Menu, X, Sparkles, LogIn, Heart, LayoutDashboard, LogOut, User as UserIcon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCart } from "@/store/cart";
 import { useWishlist } from "@/store/wishlist";
+import { useAuth } from "@/hooks/use-auth";
 import { SearchModal } from "./SearchModal";
+import { toast } from "sonner";
 
 const navLinks = [
   { label: "Home", to: "/" as const },
@@ -28,8 +30,10 @@ export function Navbar() {
   const [open, setOpen] = useState(false);
   const [catOpen, setCatOpen] = useState(false);
   const [search, setSearch] = useState(false);
+  const [userMenu, setUserMenu] = useState(false);
   const cart = useCart();
   const wishlist = useWishlist();
+  const { user, signOut } = useAuth();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -108,9 +112,30 @@ export function Navbar() {
                   </span>
                 )}
               </button>
-              <button className="hidden items-center gap-2 rounded-xl bg-gradient-to-r from-primary to-accent px-4 py-2 text-sm font-semibold text-white shadow-[0_0_20px_rgba(168,85,247,0.4)] transition hover:shadow-[0_0_30px_rgba(168,85,247,0.7)] md:inline-flex">
-                <LogIn className="h-4 w-4" /> Login
-              </button>
+              {user ? (
+                <div className="relative hidden md:block" onMouseEnter={() => setUserMenu(true)} onMouseLeave={() => setUserMenu(false)}>
+                  <button className="flex items-center gap-2 rounded-xl glass border border-white/10 px-3 py-2 text-sm font-semibold transition hover:bg-white/10">
+                    <div className="grid h-6 w-6 place-items-center rounded-full bg-gradient-to-br from-primary to-accent text-[10px] font-bold">
+                      {(user.email ?? "U").charAt(0).toUpperCase()}
+                    </div>
+                    <span className="max-w-[100px] truncate">{user.user_metadata?.display_name ?? user.email?.split("@")[0]}</span>
+                    <ChevronDown className="h-3 w-3" />
+                  </button>
+                  <AnimatePresence>
+                    {userMenu && (
+                      <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 8 }} className="absolute right-0 top-full mt-2 w-56 rounded-2xl glass-strong p-2">
+                        <Link to="/dashboard" className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm hover:bg-white/10"><LayoutDashboard className="h-4 w-4" /> Dashboard</Link>
+                        <Link to="/dashboard/settings" className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm hover:bg-white/10"><UserIcon className="h-4 w-4" /> Profile</Link>
+                        <button onClick={async () => { await signOut(); toast.success("Signed out"); }} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-rose-300 hover:bg-rose-500/10"><LogOut className="h-4 w-4" /> Sign out</button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              ) : (
+                <Link to="/login" className="hidden items-center gap-2 rounded-xl bg-gradient-to-r from-primary to-accent px-4 py-2 text-sm font-semibold text-white shadow-[0_0_20px_rgba(168,85,247,0.4)] transition hover:shadow-[0_0_30px_rgba(168,85,247,0.7)] md:inline-flex">
+                  <LogIn className="h-4 w-4" /> Login
+                </Link>
+              )}
               <button onClick={() => setOpen((o) => !o)} className="grid h-10 w-10 place-items-center rounded-xl glass lg:hidden">
                 {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
               </button>
@@ -142,9 +167,15 @@ export function Navbar() {
                       </Link>
                     ))}
                   </div>
-                  <button className="mt-3 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary to-accent px-4 py-3 text-sm font-semibold">
-                    <LogIn className="h-4 w-4" /> Login
-                  </button>
+                  {user ? (
+                    <Link to="/dashboard" onClick={() => setOpen(false)} className="mt-3 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary to-accent px-4 py-3 text-sm font-semibold">
+                      <LayoutDashboard className="h-4 w-4" /> Dashboard
+                    </Link>
+                  ) : (
+                    <Link to="/login" onClick={() => setOpen(false)} className="mt-3 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary to-accent px-4 py-3 text-sm font-semibold">
+                      <LogIn className="h-4 w-4" /> Login
+                    </Link>
+                  )}
                 </div>
               </motion.div>
             )}
