@@ -9,6 +9,10 @@ import {
 } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
+import { CartProvider } from "@/store/cart";
+import { WishlistProvider } from "@/store/wishlist";
+import { CartDrawer } from "@/components/site/CartDrawer";
+import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
   return (
@@ -113,7 +117,13 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Outlet />
+      <WishlistProvider>
+        <CartProvider>
+          <Outlet />
+          <CartDrawer />
+          <Toaster />
+        </CartProvider>
+      </WishlistProvider>
     </QueryClientProvider>
   );
 }
