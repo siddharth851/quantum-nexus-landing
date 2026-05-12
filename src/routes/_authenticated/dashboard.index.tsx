@@ -7,7 +7,7 @@ import { useWishlist } from "@/store/wishlist";
 import { useCart } from "@/store/cart";
 import { supabase } from "@/integrations/supabase/client";
 
-export const Route = createFileRoute("/_authenticated/dashboard")({
+export const Route = createFileRoute("/_authenticated/dashboard/")({
   component: DashboardPage,
   head: () => ({ meta: [{ title: "Dashboard — NovaMarket" }] }),
 });
