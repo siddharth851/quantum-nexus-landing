@@ -6,7 +6,13 @@ import { discountPercent, type Product } from "@/lib/products";
 import { useCart } from "@/store/cart";
 import { useWishlist } from "@/store/wishlist";
 
-export function QuickViewModal({ product, onClose }: { product: Product | null; onClose: () => void }) {
+export function QuickViewModal({
+  product,
+  onClose,
+}: {
+  product: Product | null;
+  onClose: () => void;
+}) {
   const cart = useCart();
   const wishlist = useWishlist();
 
@@ -35,7 +41,9 @@ export function QuickViewModal({ product, onClose }: { product: Product | null; 
               <X className="h-4 w-4" />
             </button>
             <div className="grid md:grid-cols-2">
-              <div className={`relative aspect-square bg-gradient-to-br ${product.gradient} md:aspect-auto`}>
+              <div
+                className={`relative aspect-square bg-gradient-to-br ${product.gradient} md:aspect-auto`}
+              >
                 <div className="absolute inset-0 bg-grid opacity-30" />
                 <div className="absolute inset-0 grid place-items-center">
                   <span className="text-7xl font-bold text-white/95 drop-shadow-[0_8px_30px_rgba(0,0,0,0.5)]">
@@ -59,9 +67,13 @@ export function QuickViewModal({ product, onClose }: { product: Product | null; 
                 </div>
                 <p className="mt-4 text-sm text-white/70">{product.description}</p>
                 <div className="mt-4 flex items-baseline gap-3">
-                  <span className="text-3xl font-bold text-gradient">${Number(product.discount_price)}</span>
+                  <span className="text-3xl font-bold text-gradient">
+                    ${Number(product.discount_price)}
+                  </span>
                   {Number(product.original_price) > Number(product.discount_price) && (
-                    <span className="text-sm text-white/40 line-through">${Number(product.original_price)}</span>
+                    <span className="text-sm text-white/40 line-through">
+                      ${Number(product.original_price)}
+                    </span>
                   )}
                 </div>
 
@@ -93,7 +105,10 @@ export function QuickViewModal({ product, onClose }: { product: Product | null; 
                       }}
                       className={`inline-flex items-center justify-center gap-2 rounded-xl glass px-4 py-2.5 text-sm font-semibold hover:bg-white/10 ${wishlist.has(product.id) ? "text-rose-400" : ""}`}
                     >
-                      <Heart className={`h-4 w-4 ${wishlist.has(product.id) ? "fill-rose-400" : ""}`} /> Wishlist
+                      <Heart
+                        className={`h-4 w-4 ${wishlist.has(product.id) ? "fill-rose-400" : ""}`}
+                      />{" "}
+                      Wishlist
                     </button>
                   </div>
                   <Link

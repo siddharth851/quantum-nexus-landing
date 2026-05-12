@@ -30,17 +30,37 @@ function ForgotPage() {
   return (
     <AuthLayout
       title={sent ? "Check your email" : "Forgot password?"}
-      subtitle={sent ? "We sent a reset link to your email." : "Enter your email and we'll send a reset link."}
-      footer={<Link to="/login" className="text-gradient font-semibold">Back to sign in</Link>}
+      subtitle={
+        sent
+          ? "We sent a reset link to your email."
+          : "Enter your email and we'll send a reset link."
+      }
+      footer={
+        <Link to="/login" className="text-gradient font-semibold">
+          Back to sign in
+        </Link>
+      }
     >
       {!sent && (
         <form onSubmit={onSubmit} className="space-y-4">
           <div className="relative">
             <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
-            <input type="email" required placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full rounded-xl glass border border-white/10 bg-white/5 py-3 pl-11 pr-4 text-sm outline-none focus:border-primary/60" />
+            <input
+              type="email"
+              required
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full rounded-xl glass border border-white/10 bg-white/5 py-3 pl-11 pr-4 text-sm outline-none focus:border-primary/60"
+            />
           </div>
-          <button type="submit" disabled={loading} className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary to-accent px-4 py-3 text-sm font-semibold disabled:opacity-60">
-            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />} Send reset link
+          <button
+            type="submit"
+            disabled={loading}
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary to-accent px-4 py-3 text-sm font-semibold disabled:opacity-60"
+          >
+            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}{" "}
+            Send reset link
           </button>
         </form>
       )}

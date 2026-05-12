@@ -9,7 +9,15 @@ const stats = [
   { icon: Headphones, value: 24, suffix: "/7", label: "Premium Support" },
 ];
 
-function Counter({ value, decimals = 0, suffix = "" }: { value: number; decimals?: number; suffix?: string }) {
+function Counter({
+  value,
+  decimals = 0,
+  suffix = "",
+}: {
+  value: number;
+  decimals?: number;
+  suffix?: string;
+}) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, margin: "-50px" });
   const [n, setN] = useState(0);

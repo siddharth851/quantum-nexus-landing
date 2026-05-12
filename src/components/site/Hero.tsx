@@ -29,8 +29,8 @@ export function Hero() {
               Digital Products <span className="text-gradient">Marketplace</span>
             </h1>
             <p className="mt-6 max-w-xl text-lg text-white/70">
-              Unlock 10,000+ premium AI tools, subscriptions, courses and digital products at
-              the lowest prices. Cinematic experience. Instant access. Lifetime value.
+              Unlock 10,000+ premium AI tools, subscriptions, courses and digital products at the
+              lowest prices. Cinematic experience. Instant access. Lifetime value.
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
               <button className="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-primary via-accent to-secondary px-6 py-3.5 text-sm font-semibold text-white glow-primary transition hover:scale-[1.03]">
@@ -122,8 +122,11 @@ export function Hero() {
             >
               <div className="flex items-center gap-3">
                 <div className="flex -space-x-2">
-                  {[0,1,2].map(i => (
-                    <div key={i} className="h-7 w-7 rounded-full border-2 border-background bg-gradient-to-br from-primary to-secondary" />
+                  {[0, 1, 2].map((i) => (
+                    <div
+                      key={i}
+                      className="h-7 w-7 rounded-full border-2 border-background bg-gradient-to-br from-primary to-secondary"
+                    />
                   ))}
                 </div>
                 <div>

@@ -1,13 +1,28 @@
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import {
-  Brain, Tv, Palette, GraduationCap, Rocket, Code2, Megaphone, Film, type LucideIcon,
+  Brain,
+  Tv,
+  Palette,
+  GraduationCap,
+  Rocket,
+  Code2,
+  Megaphone,
+  Film,
+  type LucideIcon,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { fetchCategories } from "@/lib/products";
 
 const icons: Record<string, LucideIcon> = {
-  Brain, Tv, Palette, GraduationCap, Rocket, Code2, Megaphone, Film,
+  Brain,
+  Tv,
+  Palette,
+  GraduationCap,
+  Rocket,
+  Code2,
+  Megaphone,
+  Film,
 };
 
 export function Categories() {
@@ -46,8 +61,12 @@ export function Categories() {
                   params={{ slug: c.slug }}
                   className="group relative block overflow-hidden rounded-2xl glass-strong p-6 transition hover:glow-primary"
                 >
-                  <div className={`absolute -right-10 -top-10 h-32 w-32 rounded-full bg-gradient-to-br ${c.gradient} opacity-20 blur-2xl transition group-hover:opacity-50`} />
-                  <div className={`mb-4 inline-grid h-12 w-12 place-items-center rounded-xl bg-gradient-to-br ${c.gradient} transition group-hover:scale-110 group-hover:rotate-3`}>
+                  <div
+                    className={`absolute -right-10 -top-10 h-32 w-32 rounded-full bg-gradient-to-br ${c.gradient} opacity-20 blur-2xl transition group-hover:opacity-50`}
+                  />
+                  <div
+                    className={`mb-4 inline-grid h-12 w-12 place-items-center rounded-xl bg-gradient-to-br ${c.gradient} transition group-hover:scale-110 group-hover:rotate-3`}
+                  >
                     <Icon className="h-6 w-6 text-white" />
                   </div>
                   <h3 className="text-lg font-semibold">{c.name}</h3>

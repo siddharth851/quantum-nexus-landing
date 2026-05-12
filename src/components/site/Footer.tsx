@@ -1,9 +1,15 @@
 import { Sparkles, Twitter, Instagram, Youtube, Github, Send, MessageCircle } from "lucide-react";
 
 const cols = [
-  { title: "Marketplace", links: ["AI Tools", "Streaming Apps", "Design Software", "Developer Tools", "All Categories"] },
+  {
+    title: "Marketplace",
+    links: ["AI Tools", "Streaming Apps", "Design Software", "Developer Tools", "All Categories"],
+  },
   { title: "Company", links: ["About Us", "Careers", "Press", "Affiliates", "Contact"] },
-  { title: "Support", links: ["Help Center", "Order Tracking", "Refund Policy", "Live Chat", "WhatsApp"] },
+  {
+    title: "Support",
+    links: ["Help Center", "Order Tracking", "Refund Policy", "Live Chat", "WhatsApp"],
+  },
 ];
 
 export function Footer() {
@@ -21,7 +27,8 @@ export function Footer() {
               </span>
             </div>
             <p className="mt-4 max-w-sm text-sm text-white/60">
-              The world's most premium marketplace for AI tools, subscriptions, courses and digital products.
+              The world's most premium marketplace for AI tools, subscriptions, courses and digital
+              products.
             </p>
             <div className="mt-6 flex gap-2">
               {[Twitter, Instagram, Youtube, Github, Send, MessageCircle].map((I, i) => (
@@ -38,7 +45,9 @@ export function Footer() {
           </div>
           {cols.map((c) => (
             <div key={c.title} className="lg:col-span-2">
-              <h4 className="text-sm font-semibold uppercase tracking-widest text-white/80">{c.title}</h4>
+              <h4 className="text-sm font-semibold uppercase tracking-widest text-white/80">
+                {c.title}
+              </h4>
               <ul className="mt-4 space-y-2">
                 {c.links.map((l) => (
                   <li key={l}>
@@ -51,7 +60,9 @@ export function Footer() {
             </div>
           ))}
           <div className="lg:col-span-2">
-            <h4 className="text-sm font-semibold uppercase tracking-widest text-white/80">Newsletter</h4>
+            <h4 className="text-sm font-semibold uppercase tracking-widest text-white/80">
+              Newsletter
+            </h4>
             <p className="mt-4 text-xs text-white/60">Weekly drops, straight to your inbox.</p>
             <form onSubmit={(e) => e.preventDefault()} className="mt-3 flex">
               <input
@@ -66,11 +77,19 @@ export function Footer() {
         </div>
 
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-6 md:flex-row">
-          <p className="text-xs text-white/50">© {new Date().getFullYear()} NovaMarket. All rights reserved.</p>
+          <p className="text-xs text-white/50">
+            © {new Date().getFullYear()} NovaMarket. All rights reserved.
+          </p>
           <div className="flex gap-6 text-xs text-white/50">
-            <a href="#" className="hover:text-white">Terms of Service</a>
-            <a href="#" className="hover:text-white">Privacy Policy</a>
-            <a href="#" className="hover:text-white">Cookies</a>
+            <a href="#" className="hover:text-white">
+              Terms of Service
+            </a>
+            <a href="#" className="hover:text-white">
+              Privacy Policy
+            </a>
+            <a href="#" className="hover:text-white">
+              Cookies
+            </a>
           </div>
         </div>
       </div>

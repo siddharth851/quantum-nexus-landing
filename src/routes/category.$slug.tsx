@@ -22,16 +22,24 @@ function CategoryPage() {
       <Navbar />
       <main className="pt-6">
         <div className="mx-auto max-w-7xl px-4">
-          <div className={`relative overflow-hidden rounded-3xl glass-strong p-8 md:p-12 ${cat ? `bg-gradient-to-br ${cat.gradient}` : ""}`}>
+          <div
+            className={`relative overflow-hidden rounded-3xl glass-strong p-8 md:p-12 ${cat ? `bg-gradient-to-br ${cat.gradient}` : ""}`}
+          >
             <div className="absolute inset-0 bg-grid opacity-30" />
             <div className="relative">
-              <p className="text-xs font-semibold uppercase tracking-widest text-white/80">Category</p>
+              <p className="text-xs font-semibold uppercase tracking-widest text-white/80">
+                Category
+              </p>
               <h1 className="mt-2 text-4xl font-bold md:text-5xl">{cat?.name ?? slug}</h1>
               {cat?.description && <p className="mt-3 max-w-xl text-white/80">{cat.description}</p>}
             </div>
           </div>
         </div>
-        <ProductsExplorer initialCategory={slug} title={cat?.name ?? "Category"} subtitle={cat?.description ?? undefined} />
+        <ProductsExplorer
+          initialCategory={slug}
+          title={cat?.name ?? "Category"}
+          subtitle={cat?.description ?? undefined}
+        />
       </main>
       <Footer />
       <WhatsAppFab />

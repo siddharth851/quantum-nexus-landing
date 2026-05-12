@@ -3,11 +3,41 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Star, Quote } from "lucide-react";
 
 const reviews = [
-  { name: "Sarah Chen", role: "Product Designer", text: "NovaMarket is unreal. I got Midjourney + Figma + Notion AI for less than the price of one. Instant delivery, premium experience.", rating: 5, color: "from-primary to-accent" },
-  { name: "Marcus Reid", role: "Indie Developer", text: "Honestly the cleanest checkout I've ever used. Got my GitHub Copilot key in 4 seconds. Support replied in WhatsApp instantly.", rating: 5, color: "from-secondary to-primary" },
-  { name: "Aisha Kapoor", role: "Marketing Lead", text: "We outfitted the whole team with AI tools at 70% off. The dashboard is gorgeous and the products all work flawlessly.", rating: 5, color: "from-accent to-secondary" },
-  { name: "Diego Alvarez", role: "Filmmaker", text: "Got Runway, DaVinci and Adobe in one bundle. The flash sale section is dangerous — I spent way more than planned.", rating: 5, color: "from-primary to-secondary" },
-  { name: "Priya Nair", role: "Course Creator", text: "Coursera Plus + MasterClass + Skillshare for the price of a coffee. This site looks like the future of e-commerce.", rating: 5, color: "from-accent to-primary" },
+  {
+    name: "Sarah Chen",
+    role: "Product Designer",
+    text: "NovaMarket is unreal. I got Midjourney + Figma + Notion AI for less than the price of one. Instant delivery, premium experience.",
+    rating: 5,
+    color: "from-primary to-accent",
+  },
+  {
+    name: "Marcus Reid",
+    role: "Indie Developer",
+    text: "Honestly the cleanest checkout I've ever used. Got my GitHub Copilot key in 4 seconds. Support replied in WhatsApp instantly.",
+    rating: 5,
+    color: "from-secondary to-primary",
+  },
+  {
+    name: "Aisha Kapoor",
+    role: "Marketing Lead",
+    text: "We outfitted the whole team with AI tools at 70% off. The dashboard is gorgeous and the products all work flawlessly.",
+    rating: 5,
+    color: "from-accent to-secondary",
+  },
+  {
+    name: "Diego Alvarez",
+    role: "Filmmaker",
+    text: "Got Runway, DaVinci and Adobe in one bundle. The flash sale section is dangerous — I spent way more than planned.",
+    rating: 5,
+    color: "from-primary to-secondary",
+  },
+  {
+    name: "Priya Nair",
+    role: "Course Creator",
+    text: "Coursera Plus + MasterClass + Skillshare for the price of a coffee. This site looks like the future of e-commerce.",
+    rating: 5,
+    color: "from-accent to-primary",
+  },
 ];
 
 export function Testimonials() {
@@ -21,7 +51,9 @@ export function Testimonials() {
     <section className="relative py-20">
       <div className="mx-auto max-w-7xl px-4">
         <div className="mx-auto max-w-2xl text-center">
-          <p className="text-sm font-semibold uppercase tracking-widest text-secondary">Testimonials</p>
+          <p className="text-sm font-semibold uppercase tracking-widest text-secondary">
+            Testimonials
+          </p>
           <h2 className="mt-2 text-4xl font-bold md:text-5xl">
             Loved by <span className="text-gradient">creators worldwide</span>
           </h2>
@@ -47,8 +79,13 @@ export function Testimonials() {
                 "{reviews[i].text}"
               </p>
               <div className="mt-6 flex items-center gap-3">
-                <div className={`grid h-12 w-12 place-items-center rounded-full bg-gradient-to-br ${reviews[i].color} text-sm font-bold`}>
-                  {reviews[i].name.split(" ").map((w) => w[0]).join("")}
+                <div
+                  className={`grid h-12 w-12 place-items-center rounded-full bg-gradient-to-br ${reviews[i].color} text-sm font-bold`}
+                >
+                  {reviews[i].name
+                    .split(" ")
+                    .map((w) => w[0])
+                    .join("")}
                 </div>
                 <div>
                   <p className="font-semibold">{reviews[i].name}</p>

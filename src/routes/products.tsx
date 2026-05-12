@@ -10,7 +10,11 @@ export const Route = createFileRoute("/products")({
   head: () => ({
     meta: [
       { title: "All Products — NovaMarket" },
-      { name: "description", content: "Browse, search and filter premium AI tools, subscriptions, courses and digital products." },
+      {
+        name: "description",
+        content:
+          "Browse, search and filter premium AI tools, subscriptions, courses and digital products.",
+      },
     ],
   }),
 });

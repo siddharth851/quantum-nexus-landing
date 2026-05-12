@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Mail, Lock, Loader2, LogIn } from "lucide-react";
+import { Mail, Lock, Loader2, LogIn, type LucideIcon } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 import { AuthLayout } from "@/components/site/AuthLayout";
@@ -8,7 +8,9 @@ import { useAuth } from "@/hooks/use-auth";
 import { lovable } from "@/integrations/lovable";
 
 export const Route = createFileRoute("/login")({
-  validateSearch: (s: Record<string, unknown>) => ({ redirect: (s.redirect as string) || "/dashboard" }),
+  validateSearch: (s: Record<string, unknown>) => ({
+    redirect: (s.redirect as string) || "/dashboard",
+  }),
   component: LoginPage,
   head: () => ({ meta: [{ title: "Sign In — NovaMarket" }] }),
 });
@@ -41,7 +43,9 @@ function LoginPage() {
 
   const onGoogle = async () => {
     setGLoading(true);
-    const r = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + "/dashboard" });
+    const r = await lovable.auth.signInWithOAuth("google", {
+      redirect_uri: window.location.origin + "/dashboard",
+    });
     if (r.error) {
       setGLoading(false);
       toast.error(r.error.message || "Google sign-in failed");
@@ -53,7 +57,12 @@ function LoginPage() {
       title="Welcome back"
       subtitle="Sign in to continue your premium experience"
       footer={
-        <>Don't have an account? <Link to="/signup" className="text-gradient font-semibold">Create one</Link></>
+        <>
+          Don't have an account?{" "}
+          <Link to="/signup" className="text-gradient font-semibold">
+            Create one
+          </Link>
+        </>
       }
     >
       <button
@@ -61,8 +70,15 @@ function LoginPage() {
         disabled={gLoading}
         className="flex w-full items-center justify-center gap-3 rounded-xl glass border border-white/10 px-4 py-3 text-sm font-semibold transition hover:bg-white/10"
       >
-        {gLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : (
-          <svg className="h-5 w-5" viewBox="0 0 24 24"><path fill="#fff" d="M21.35 11.1H12v3.2h5.35c-.23 1.4-1.62 4.1-5.35 4.1-3.22 0-5.85-2.66-5.85-5.95s2.63-5.95 5.85-5.95c1.83 0 3.06.78 3.76 1.45l2.56-2.47C16.78 3.97 14.6 3 12 3 6.98 3 3 6.98 3 12s3.98 9 9 9c5.2 0 8.65-3.65 8.65-8.78 0-.59-.07-1.05-.3-1.12z"/></svg>
+        {gLoading ? (
+          <Loader2 className="h-4 w-4 animate-spin" />
+        ) : (
+          <svg className="h-5 w-5" viewBox="0 0 24 24">
+            <path
+              fill="#fff"
+              d="M21.35 11.1H12v3.2h5.35c-.23 1.4-1.62 4.1-5.35 4.1-3.22 0-5.85-2.66-5.85-5.95s2.63-5.95 5.85-5.95c1.83 0 3.06.78 3.76 1.45l2.56-2.47C16.78 3.97 14.6 3 12 3 6.98 3 3 6.98 3 12s3.98 9 9 9c5.2 0 8.65-3.65 8.65-8.78 0-.59-.07-1.05-.3-1.12z"
+            />
+          </svg>
         )}
         Continue with Google
       </button>
@@ -72,10 +88,24 @@ function LoginPage() {
       </div>
 
       <form onSubmit={onSubmit} className="space-y-4">
-        <Field icon={Mail} type="email" placeholder="you@example.com" value={email} onChange={setEmail} />
-        <Field icon={Lock} type="password" placeholder="Password" value={password} onChange={setPassword} />
+        <Field
+          icon={Mail}
+          type="email"
+          placeholder="you@example.com"
+          value={email}
+          onChange={setEmail}
+        />
+        <Field
+          icon={Lock}
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={setPassword}
+        />
         <div className="flex justify-end">
-          <Link to="/forgot-password" className="text-xs text-white/60 hover:text-white">Forgot password?</Link>
+          <Link to="/forgot-password" className="text-xs text-white/60 hover:text-white">
+            Forgot password?
+          </Link>
         </div>
         <button
           type="submit"
@@ -90,7 +120,19 @@ function LoginPage() {
   );
 }
 
-function Field({ icon: Icon, type, placeholder, value, onChange }: { icon: any; type: string; placeholder: string; value: string; onChange: (v: string) => void }) {
+function Field({
+  icon: Icon,
+  type,
+  placeholder,
+  value,
+  onChange,
+}: {
+  icon: LucideIcon;
+  type: string;
+  placeholder: string;
+  value: string;
+  onChange: (v: string) => void;
+}) {
   return (
     <div className="relative">
       <Icon className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />

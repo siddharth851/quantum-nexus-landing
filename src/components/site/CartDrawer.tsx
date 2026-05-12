@@ -35,7 +35,10 @@ export function CartDrawer() {
                   <p className="text-xs text-white/55">{cart.count} items</p>
                 </div>
               </div>
-              <button onClick={cart.close} className="grid h-9 w-9 place-items-center rounded-xl glass hover:bg-white/10">
+              <button
+                onClick={cart.close}
+                className="grid h-9 w-9 place-items-center rounded-xl glass hover:bg-white/10"
+              >
                 <X className="h-4 w-4" />
               </button>
             </div>
@@ -60,7 +63,9 @@ export function CartDrawer() {
                 <ul className="space-y-3">
                   {cart.items.map((it) => (
                     <li key={it.id} className="flex gap-3 rounded-2xl glass p-3">
-                      <div className={`grid h-16 w-16 shrink-0 place-items-center rounded-xl bg-gradient-to-br ${it.gradient} font-bold text-white/95`}>
+                      <div
+                        className={`grid h-16 w-16 shrink-0 place-items-center rounded-xl bg-gradient-to-br ${it.gradient} font-bold text-white/95`}
+                      >
                         {it.initials}
                       </div>
                       <div className="flex flex-1 flex-col">
@@ -84,7 +89,9 @@ export function CartDrawer() {
                         <div className="mt-1 flex items-center gap-2 text-sm">
                           <span className="font-bold">${it.price}</span>
                           {it.original > it.price && (
-                            <span className="text-xs text-white/40 line-through">${it.original}</span>
+                            <span className="text-xs text-white/40 line-through">
+                              ${it.original}
+                            </span>
                           )}
                         </div>
                         <div className="mt-2 flex items-center justify-between">

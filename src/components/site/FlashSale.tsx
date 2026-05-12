@@ -45,11 +45,13 @@ export function FlashSale() {
                 <Flame className="h-3.5 w-3.5" /> FLASH SALE LIVE
               </div>
               <h2 className="mt-4 text-4xl font-bold leading-tight md:text-5xl">
-                Up to <span className="text-gradient">80% OFF</span><br />
+                Up to <span className="text-gradient">80% OFF</span>
+                <br />
                 everything tonight only.
               </h2>
               <p className="mt-4 text-white/70">
-                Premium AI tools, streaming, courses and design apps — at the lowest prices ever offered.
+                Premium AI tools, streaming, courses and design apps — at the lowest prices ever
+                offered.
               </p>
               <button className="mt-6 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-primary via-accent to-secondary px-6 py-3 text-sm font-semibold glow-primary transition hover:scale-105">
                 <Zap className="h-4 w-4" /> Shop the Sale

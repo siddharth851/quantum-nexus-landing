@@ -11,7 +11,7 @@ export function Particles({ count = 28 }: { count?: number }) {
         delay: Math.random() * 6,
         duration: 6 + Math.random() * 8,
       })),
-    [count]
+    [count],
   );
 
   return (

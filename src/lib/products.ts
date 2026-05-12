@@ -19,10 +19,7 @@ export type ProductFilters = {
 };
 
 export async function fetchCategories(): Promise<Category[]> {
-  const { data, error } = await supabase
-    .from("categories")
-    .select("*")
-    .order("name");
+  const { data, error } = await supabase.from("categories").select("*").order("name");
   if (error) throw error;
   return data ?? [];
 }
@@ -96,4 +93,9 @@ export async function searchProducts(term: string, limit = 8): Promise<Product[]
 }
 
 export const discountPercent = (p: Pick<Product, "original_price" | "discount_price">) =>
-  Math.max(0, Math.round(((Number(p.original_price) - Number(p.discount_price)) / Number(p.original_price)) * 100));
+  Math.max(
+    0,
+    Math.round(
+      ((Number(p.original_price) - Number(p.discount_price)) / Number(p.original_price)) * 100,
+    ),
+  );

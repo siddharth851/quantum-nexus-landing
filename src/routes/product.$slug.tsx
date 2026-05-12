@@ -1,7 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { Star, Zap, ShoppingCart, Heart, Check, ArrowLeft, Shield, Truck, BadgeCheck } from "lucide-react";
+import {
+  Star,
+  Zap,
+  ShoppingCart,
+  Heart,
+  Check,
+  ArrowLeft,
+  Shield,
+  Truck,
+  BadgeCheck,
+} from "lucide-react";
 import { toast } from "sonner";
 import { AuroraBackground } from "@/components/site/AuroraBackground";
 import { Navbar } from "@/components/site/Navbar";
@@ -12,6 +22,7 @@ import { ProductGridSkeleton } from "@/components/site/ProductSkeleton";
 import { discountPercent, fetchProductBySlug, fetchRelatedProducts } from "@/lib/products";
 import { useCart } from "@/store/cart";
 import { useWishlist } from "@/store/wishlist";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const Route = createFileRoute("/product/$slug")({
   component: ProductPage,
@@ -39,17 +50,30 @@ function ProductPage() {
       <Navbar />
       <main className="pt-6">
         <div className="mx-auto max-w-7xl px-4">
-          <Link to="/products" className="inline-flex items-center gap-1 text-sm text-white/60 hover:text-white">
+          <Link
+            to="/products"
+            className="inline-flex items-center gap-1 text-sm text-white/60 hover:text-white"
+          >
             <ArrowLeft className="h-4 w-4" /> Back to products
           </Link>
 
           {isLoading || !product ? (
             <div className="mt-6 grid gap-8 md:grid-cols-2">
-              <div className="aspect-square rounded-3xl bg-white/5" />
+              <Skeleton className="aspect-square rounded-3xl" />
               <div className="space-y-3">
-                <div className="h-8 w-2/3 rounded bg-white/10" />
-                <div className="h-4 w-full rounded bg-white/5" />
-                <div className="h-4 w-3/4 rounded bg-white/5" />
+                <Skeleton className="h-8 w-2/3 rounded-xl" />
+                <Skeleton className="h-4 w-full rounded-lg" />
+                <Skeleton className="h-4 w-3/4 rounded-lg" />
+                <div className="mt-6 grid grid-cols-3 gap-2">
+                  <Skeleton className="h-10 rounded-xl" />
+                  <Skeleton className="h-10 rounded-xl" />
+                  <Skeleton className="h-10 rounded-xl" />
+                </div>
+                <div className="mt-6 flex gap-2">
+                  <Skeleton className="h-12 flex-1 rounded-xl" />
+                  <Skeleton className="h-12 flex-1 rounded-xl" />
+                  <Skeleton className="h-12 w-12 rounded-xl" />
+                </div>
               </div>
             </div>
           ) : (
@@ -60,7 +84,9 @@ function ProductPage() {
                   animate={{ opacity: 1, y: 0 }}
                   className="space-y-3"
                 >
-                  <div className={`relative aspect-square overflow-hidden rounded-3xl bg-gradient-to-br ${product.gradient} glow-accent`}>
+                  <div
+                    className={`relative aspect-square overflow-hidden rounded-3xl bg-gradient-to-br ${product.gradient} glow-accent`}
+                  >
                     <div className="absolute inset-0 bg-grid opacity-30" />
                     <div className="absolute inset-0 grid place-items-center">
                       <span className="text-9xl font-bold text-white/95 drop-shadow-[0_8px_30px_rgba(0,0,0,0.5)]">
@@ -117,37 +143,55 @@ function ProductPage() {
                       ))}
                     </div>
                     <span className="text-white/60">
-                      {Number(product.rating).toFixed(1)} · {product.review_count.toLocaleString()} reviews
+                      {Number(product.rating).toFixed(1)} · {product.review_count.toLocaleString()}{" "}
+                      reviews
                     </span>
                   </div>
-                  <p className="mt-5 text-white/70">{product.long_description ?? product.description}</p>
+                  <p className="mt-5 text-white/70">
+                    {product.long_description ?? product.description}
+                  </p>
 
                   <div className="mt-6 flex items-baseline gap-3">
-                    <span className="text-4xl font-bold text-gradient">${Number(product.discount_price)}</span>
+                    <span className="text-4xl font-bold text-gradient">
+                      ${Number(product.discount_price)}
+                    </span>
                     {Number(product.original_price) > Number(product.discount_price) && (
-                      <span className="text-lg text-white/40 line-through">${Number(product.original_price)}</span>
+                      <span className="text-lg text-white/40 line-through">
+                        ${Number(product.original_price)}
+                      </span>
                     )}
                   </div>
 
                   <div className="mt-6 flex flex-col gap-2 sm:flex-row">
                     <button
-                      onClick={() => { cart.add(product); cart.open(); }}
+                      onClick={() => {
+                        cart.add(product);
+                        cart.open();
+                      }}
                       className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary via-accent to-secondary px-5 py-3 text-sm font-semibold glow-primary"
                     >
                       <Zap className="h-4 w-4" /> Get Access Now
                     </button>
                     <button
-                      onClick={() => { cart.add(product); toast.success("Added to cart"); }}
+                      onClick={() => {
+                        cart.add(product);
+                        toast.success("Added to cart");
+                      }}
                       className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl glass-strong px-5 py-3 text-sm font-semibold hover:bg-white/10"
                     >
                       <ShoppingCart className="h-4 w-4" /> Add to Cart
                     </button>
                     <button
-                      onClick={() => { wishlist.toggle(product.id); toast(wishlist.has(product.id) ? "Removed" : "Saved"); }}
+                      onClick={() => {
+                        wishlist.toggle(product.id);
+                        toast(wishlist.has(product.id) ? "Removed" : "Saved");
+                      }}
                       className={`grid h-12 w-12 place-items-center rounded-xl glass-strong hover:bg-white/10 ${wishlist.has(product.id) ? "text-rose-400" : ""}`}
                       aria-label="Wishlist"
                     >
-                      <Heart className={`h-5 w-5 ${wishlist.has(product.id) ? "fill-rose-400" : ""}`} />
+                      <Heart
+                        className={`h-5 w-5 ${wishlist.has(product.id) ? "fill-rose-400" : ""}`}
+                      />
                     </button>
                   </div>
 
@@ -179,7 +223,10 @@ function ProductPage() {
                   {product.tags && product.tags.length > 0 && (
                     <div className="mt-5 flex flex-wrap gap-2">
                       {product.tags.map((t) => (
-                        <span key={t} className="rounded-full glass px-3 py-1 text-xs text-white/70">
+                        <span
+                          key={t}
+                          className="rounded-full glass px-3 py-1 text-xs text-white/70"
+                        >
                           #{t}
                         </span>
                       ))}
@@ -189,7 +236,9 @@ function ProductPage() {
               </div>
 
               <section className="mt-20">
-                <h2 className="text-2xl font-bold">Related <span className="text-gradient">products</span></h2>
+                <h2 className="text-2xl font-bold">
+                  Related <span className="text-gradient">products</span>
+                </h2>
                 <div className="mt-6">
                   {!related ? (
                     <ProductGridSkeleton count={6} />

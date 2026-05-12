@@ -20,9 +20,17 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "NovaMarket — Premium AI Tools & Digital Products Marketplace" },
-      { name: "description", content: "Buy premium AI tools, subscriptions, courses and digital products at the best prices. Instant delivery, 24/7 support, 4.9★ rated marketplace." },
+      {
+        name: "description",
+        content:
+          "Buy premium AI tools, subscriptions, courses and digital products at the best prices. Instant delivery, 24/7 support, 4.9★ rated marketplace.",
+      },
       { property: "og:title", content: "NovaMarket — Premium AI Tools & Digital Products" },
-      { property: "og:description", content: "The world's most premium marketplace for AI tools, subscriptions, courses and digital products." },
+      {
+        property: "og:description",
+        content:
+          "The world's most premium marketplace for AI tools, subscriptions, courses and digital products.",
+      },
     ],
   }),
 });

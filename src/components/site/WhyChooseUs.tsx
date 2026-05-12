@@ -2,11 +2,31 @@ import { motion } from "framer-motion";
 import { Zap, ShieldCheck, Award, LifeBuoy, BadgeCheck, Rocket } from "lucide-react";
 
 const items = [
-  { icon: Zap, title: "Instant Delivery", desc: "Receive your access keys within seconds of purchase." },
-  { icon: ShieldCheck, title: "Secure Access", desc: "Encrypted checkout and protected account credentials." },
-  { icon: Award, title: "Trusted Marketplace", desc: "10,000+ verified buyers and 4.9★ average rating." },
-  { icon: LifeBuoy, title: "Premium Support", desc: "24/7 live support across chat, email and WhatsApp." },
-  { icon: BadgeCheck, title: "Verified Products", desc: "Every product is tested and 100% authentic." },
+  {
+    icon: Zap,
+    title: "Instant Delivery",
+    desc: "Receive your access keys within seconds of purchase.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Secure Access",
+    desc: "Encrypted checkout and protected account credentials.",
+  },
+  {
+    icon: Award,
+    title: "Trusted Marketplace",
+    desc: "10,000+ verified buyers and 4.9★ average rating.",
+  },
+  {
+    icon: LifeBuoy,
+    title: "Premium Support",
+    desc: "24/7 live support across chat, email and WhatsApp.",
+  },
+  {
+    icon: BadgeCheck,
+    title: "Verified Products",
+    desc: "Every product is tested and 100% authentic.",
+  },
   { icon: Rocket, title: "Fast Activation", desc: "Plug-and-play setup with quick start guides." },
 ];
 

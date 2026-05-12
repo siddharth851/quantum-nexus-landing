@@ -18,7 +18,9 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
     try {
       const raw = localStorage.getItem(KEY);
       if (raw) setIds(JSON.parse(raw));
-    } catch {}
+    } catch (e) {
+      void e;
+    }
   }, []);
   useEffect(() => {
     localStorage.setItem(KEY, JSON.stringify(ids));
@@ -33,7 +35,7 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
       clear: () => setIds([]),
       count: ids.length,
     }),
-    [ids]
+    [ids],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

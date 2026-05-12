@@ -7,6 +7,7 @@ import { Footer } from "@/components/site/Footer";
 import { WhatsAppFab } from "@/components/site/WhatsAppFab";
 import { ProductCard } from "@/components/site/ProductCard";
 import { EmptyState } from "@/components/site/EmptyState";
+import { ProductGridSkeleton } from "@/components/site/ProductSkeleton";
 import { useWishlist } from "@/store/wishlist";
 import { supabase } from "@/integrations/supabase/client";
 import type { Product } from "@/lib/products";
@@ -19,7 +20,7 @@ export const Route = createFileRoute("/wishlist")({
 function WishlistPage() {
   const { ids, count } = useWishlist();
 
-  const { data = [] } = useQuery({
+  const { data = [], isLoading } = useQuery({
     queryKey: ["wishlist", ids],
     queryFn: async (): Promise<Product[]> => {
       if (ids.length === 0) return [];
@@ -37,8 +38,12 @@ function WishlistPage() {
         <div className="mx-auto max-w-7xl px-4 py-10">
           <div className="flex items-end justify-between">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-widest text-secondary">Saved</p>
-              <h1 className="mt-2 text-4xl font-bold">Your <span className="text-gradient">Wishlist</span></h1>
+              <p className="text-sm font-semibold uppercase tracking-widest text-secondary">
+                Saved
+              </p>
+              <h1 className="mt-2 text-4xl font-bold">
+                Your <span className="text-gradient">Wishlist</span>
+              </h1>
               <p className="mt-2 text-white/60">{count} items saved for later</p>
             </div>
           </div>
@@ -49,11 +54,16 @@ function WishlistPage() {
                 title="Your wishlist is empty"
                 description="Tap the heart on any product to save it here."
                 action={
-                  <Link to="/products" className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-primary to-accent px-4 py-2 text-sm font-semibold">
+                  <Link
+                    to="/products"
+                    className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-primary to-accent px-4 py-2 text-sm font-semibold"
+                  >
                     Browse Marketplace <ArrowRight className="h-4 w-4" />
                   </Link>
                 }
               />
+            ) : isLoading ? (
+              <ProductGridSkeleton count={12} />
             ) : (
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6">
                 {data.map((p) => (

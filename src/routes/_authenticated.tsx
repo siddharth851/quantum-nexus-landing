@@ -1,7 +1,16 @@
 import { createFileRoute, Outlet, Link, useRouter, useLocation } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { motion } from "framer-motion";
-import { LayoutDashboard, Package, Heart, Settings, ShoppingBag, LogOut, Sparkles, Loader2 } from "lucide-react";
+import {
+  LayoutDashboard,
+  Package,
+  Heart,
+  Settings,
+  ShoppingBag,
+  LogOut,
+  Sparkles,
+  Loader2,
+} from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { AuroraBackground } from "@/components/site/AuroraBackground";
 import { toast } from "sonner";
@@ -59,7 +68,9 @@ function AuthenticatedLayout() {
             <div className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-primary via-accent to-secondary glow-primary">
               <Sparkles className="h-5 w-5" />
             </div>
-            <span className="text-lg font-bold">Nova<span className="text-gradient">Market</span></span>
+            <span className="text-lg font-bold">
+              Nova<span className="text-gradient">Market</span>
+            </span>
           </Link>
           <div className="my-5 h-px bg-white/10" />
           <div className="mb-4 flex items-center gap-3 rounded-2xl glass p-3">
@@ -67,7 +78,9 @@ function AuthenticatedLayout() {
               {(user.email ?? "U").charAt(0).toUpperCase()}
             </div>
             <div className="min-w-0">
-              <p className="truncate text-sm font-semibold">{user.user_metadata?.display_name ?? user.email?.split("@")[0]}</p>
+              <p className="truncate text-sm font-semibold">
+                {user.user_metadata?.display_name ?? user.email?.split("@")[0]}
+              </p>
               <p className="truncate text-xs text-white/50">{user.email}</p>
             </div>
           </div>
@@ -85,7 +98,10 @@ function AuthenticatedLayout() {
                 </Link>
               );
             })}
-            <button onClick={handleLogout} className="mt-2 flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-rose-300 transition hover:bg-rose-500/10">
+            <button
+              onClick={handleLogout}
+              className="mt-2 flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-rose-300 transition hover:bg-rose-500/10"
+            >
               <LogOut className="h-4 w-4" /> Sign out
             </button>
           </nav>

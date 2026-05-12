@@ -56,7 +56,10 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
                 className="flex-1 bg-transparent text-base outline-none placeholder:text-white/40"
               />
               {isFetching && <Loader2 className="h-4 w-4 animate-spin text-secondary" />}
-              <button onClick={onClose} className="grid h-8 w-8 place-items-center rounded-lg glass hover:bg-white/10">
+              <button
+                onClick={onClose}
+                className="grid h-8 w-8 place-items-center rounded-lg glass hover:bg-white/10"
+              >
                 <X className="h-4 w-4" />
               </button>
             </div>
@@ -64,7 +67,9 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
             <div className="max-h-[60vh] overflow-y-auto p-3">
               {!term.trim() ? (
                 <div className="p-4">
-                  <p className="text-xs font-semibold uppercase tracking-widest text-white/50">Trending searches</p>
+                  <p className="text-xs font-semibold uppercase tracking-widest text-white/50">
+                    Trending searches
+                  </p>
                   <div className="mt-3 flex flex-wrap gap-2">
                     {popular.map((t) => (
                       <button
@@ -91,14 +96,18 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
                         onClick={onClose}
                         className="flex items-center gap-3 rounded-xl p-2 transition hover:bg-white/10"
                       >
-                        <div className={`grid h-10 w-10 place-items-center rounded-lg bg-gradient-to-br ${p.gradient} text-xs font-bold`}>
+                        <div
+                          className={`grid h-10 w-10 place-items-center rounded-lg bg-gradient-to-br ${p.gradient} text-xs font-bold`}
+                        >
                           {p.initials}
                         </div>
                         <div className="min-w-0 flex-1">
                           <p className="truncate text-sm font-semibold">{p.name}</p>
                           <p className="truncate text-xs text-white/55">{p.description}</p>
                         </div>
-                        <span className="text-sm font-bold text-secondary">${Number(p.discount_price)}</span>
+                        <span className="text-sm font-bold text-secondary">
+                          ${Number(p.discount_price)}
+                        </span>
                       </Link>
                     </li>
                   ))}

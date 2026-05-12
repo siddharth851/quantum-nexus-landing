@@ -4,15 +4,21 @@ import { ShoppingBag } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { EmptyState } from "@/components/site/EmptyState";
+import type { Tables } from "@/integrations/supabase/types";
+import type { Product } from "@/lib/products";
 
 export const Route = createFileRoute("/_authenticated/dashboard/orders")({
   component: OrdersPage,
   head: () => ({ meta: [{ title: "Orders — NovaMarket" }] }),
 });
 
+type OrderWithProduct = Tables<"purchased_products"> & {
+  products: Pick<Product, "name" | "original_price" | "discount_price"> | null;
+};
+
 function OrdersPage() {
   const { user } = useAuth();
-  const { data = [] } = useQuery({
+  const { data = [] } = useQuery<OrderWithProduct[]>({
     queryKey: ["orders", user?.id],
     enabled: !!user,
     queryFn: async () => {
@@ -21,7 +27,7 @@ function OrdersPage() {
         .select("*, products(name, original_price, discount_price)")
         .order("purchased_at", { ascending: false });
       if (error) throw error;
-      return data ?? [];
+      return (data ?? []) as OrderWithProduct[];
     },
   });
 
@@ -29,11 +35,17 @@ function OrdersPage() {
     <div className="space-y-6">
       <div className="glass-strong rounded-3xl p-8">
         <p className="text-xs font-semibold uppercase tracking-widest text-secondary">History</p>
-        <h1 className="mt-2 text-4xl font-bold">Order <span className="text-gradient">History</span></h1>
+        <h1 className="mt-2 text-4xl font-bold">
+          Order <span className="text-gradient">History</span>
+        </h1>
         <p className="mt-2 text-white/60">All your past transactions.</p>
       </div>
       {data.length === 0 ? (
-        <EmptyState icon={ShoppingBag} title="No orders yet" description="Your order history will show up here." />
+        <EmptyState
+          icon={ShoppingBag}
+          title="No orders yet"
+          description="Your order history will show up here."
+        />
       ) : (
         <div className="glass-strong overflow-hidden rounded-3xl">
           <table className="w-full text-sm">
@@ -46,14 +58,20 @@ function OrdersPage() {
               </tr>
             </thead>
             <tbody>
-              {data.map((o: any) => (
+              {data.map((o) => (
                 <tr key={o.id} className="border-t border-white/5">
                   <td className="px-5 py-4 font-medium">{o.products?.name}</td>
-                  <td className="px-5 py-4 text-white/60">{new Date(o.purchased_at).toLocaleDateString()}</td>
-                  <td className="px-5 py-4">
-                    <span className="rounded-full bg-emerald-500/15 px-2 py-1 text-xs font-semibold text-emerald-300 capitalize">{o.status}</span>
+                  <td className="px-5 py-4 text-white/60">
+                    {new Date(o.purchased_at).toLocaleDateString()}
                   </td>
-                  <td className="px-5 py-4 text-right font-semibold">${Number(o.products?.discount_price ?? 0).toFixed(2)}</td>
+                  <td className="px-5 py-4">
+                    <span className="rounded-full bg-emerald-500/15 px-2 py-1 text-xs font-semibold text-emerald-300 capitalize">
+                      {o.status}
+                    </span>
+                  </td>
+                  <td className="px-5 py-4 text-right font-semibold">
+                    ${Number(o.products?.discount_price ?? 0).toFixed(2)}
+                  </td>
                 </tr>
               ))}
             </tbody>

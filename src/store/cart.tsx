@@ -37,7 +37,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
     try {
       const raw = localStorage.getItem(KEY);
       if (raw) setItems(JSON.parse(raw));
-    } catch {}
+    } catch (e) {
+      void e;
+    }
   }, []);
   useEffect(() => {
     localStorage.setItem(KEY, JSON.stringify(items));

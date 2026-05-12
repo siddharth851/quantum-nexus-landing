@@ -32,7 +32,11 @@ export function ProductCard({
   const onMove = (e: React.MouseEvent) => {
     const r = ref.current?.getBoundingClientRect();
     if (!r) return;
-    setLight({ x: ((e.clientX - r.left) / r.width) * 100, y: ((e.clientY - r.top) / r.height) * 100, on: true });
+    setLight({
+      x: ((e.clientX - r.left) / r.width) * 100,
+      y: ((e.clientY - r.top) / r.height) * 100,
+      on: true,
+    });
   };
 
   const handleAdd = (e: React.MouseEvent) => {
@@ -87,7 +91,9 @@ export function ProductCard({
       />
       <div
         className="absolute inset-0 rounded-2xl opacity-0 transition group-hover:opacity-100"
-        style={{ boxShadow: "inset 0 0 0 1px rgba(168,85,247,0.5), 0 0 30px -5px rgba(124,58,237,0.6)" }}
+        style={{
+          boxShadow: "inset 0 0 0 1px rgba(168,85,247,0.5), 0 0 30px -5px rgba(124,58,237,0.6)",
+        }}
       />
 
       <div className={`relative aspect-[16/10] overflow-hidden bg-gradient-to-br ${p.gradient}`}>
@@ -144,7 +150,9 @@ export function ProductCard({
         <div className="mt-2 flex items-baseline gap-1.5">
           <span className="text-base font-bold text-white">${Number(p.discount_price)}</span>
           {Number(p.original_price) > Number(p.discount_price) && (
-            <span className="text-[11px] text-white/40 line-through">${Number(p.original_price)}</span>
+            <span className="text-[11px] text-white/40 line-through">
+              ${Number(p.original_price)}
+            </span>
           )}
         </div>
         <div className="relative z-20 mt-2.5 grid grid-cols-2 gap-1.5">

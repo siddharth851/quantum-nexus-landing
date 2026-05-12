@@ -3,12 +3,30 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Plus } from "lucide-react";
 
 const faqs = [
-  { q: "How fast will I receive my product?", a: "Most products are delivered instantly to your email and dashboard within seconds of payment. Custom bundles may take up to 5 minutes." },
-  { q: "Are the subscriptions and tools authentic?", a: "Yes. Every product on NovaMarket is verified, tested and sourced from authorized channels. We offer a 100% authenticity guarantee." },
-  { q: "Do you offer refunds?", a: "If a product doesn't activate or work as described, we'll replace it or issue a full refund within 24 hours — no questions asked." },
-  { q: "Can I use these on multiple devices?", a: "It depends on the product. Each listing clearly states the supported number of devices and any limitations." },
-  { q: "How does the support work?", a: "We offer 24/7 live support through chat, email, WhatsApp and Telegram. Average response time is under 2 minutes." },
-  { q: "Do you offer team or business pricing?", a: "Yes, contact our sales team for custom team licenses, volume discounts and white-glove onboarding." },
+  {
+    q: "How fast will I receive my product?",
+    a: "Most products are delivered instantly to your email and dashboard within seconds of payment. Custom bundles may take up to 5 minutes.",
+  },
+  {
+    q: "Are the subscriptions and tools authentic?",
+    a: "Yes. Every product on NovaMarket is verified, tested and sourced from authorized channels. We offer a 100% authenticity guarantee.",
+  },
+  {
+    q: "Do you offer refunds?",
+    a: "If a product doesn't activate or work as described, we'll replace it or issue a full refund within 24 hours — no questions asked.",
+  },
+  {
+    q: "Can I use these on multiple devices?",
+    a: "It depends on the product. Each listing clearly states the supported number of devices and any limitations.",
+  },
+  {
+    q: "How does the support work?",
+    a: "We offer 24/7 live support through chat, email, WhatsApp and Telegram. Average response time is under 2 minutes.",
+  },
+  {
+    q: "Do you offer team or business pricing?",
+    a: "Yes, contact our sales team for custom team licenses, volume discounts and white-glove onboarding.",
+  },
 ];
 
 export function FAQ() {
@@ -39,7 +57,9 @@ export function FAQ() {
                   className="flex w-full items-center justify-between gap-4 p-5 text-left"
                 >
                   <span className="font-semibold">{f.q}</span>
-                  <Plus className={`h-5 w-5 shrink-0 transition-transform ${isOpen ? "rotate-45 text-secondary" : "text-white/50"}`} />
+                  <Plus
+                    className={`h-5 w-5 shrink-0 transition-transform ${isOpen ? "rotate-45 text-secondary" : "text-white/50"}`}
+                  />
                 </button>
                 <AnimatePresence>
                   {isOpen && (

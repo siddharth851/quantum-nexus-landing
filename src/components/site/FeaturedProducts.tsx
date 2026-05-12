@@ -35,12 +35,15 @@ export function FeaturedProducts() {
       <div className="mx-auto max-w-7xl px-4">
         <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-widest text-secondary">Featured</p>
+            <p className="text-sm font-semibold uppercase tracking-widest text-secondary">
+              Featured
+            </p>
             <h2 className="mt-2 text-4xl font-bold md:text-5xl">
               Premium <span className="text-gradient">Digital Products</span>
             </h2>
             <p className="mt-3 max-w-xl text-white/70">
-              Hand-picked top sellers across every category, with instant delivery and lifetime support.
+              Hand-picked top sellers across every category, with instant delivery and lifetime
+              support.
             </p>
           </div>
           <Link

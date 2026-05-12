@@ -23,7 +23,8 @@ export function Newsletter() {
               Get exclusive deals before <span className="text-gradient">anyone else</span>
             </h2>
             <p className="mx-auto mt-3 max-w-xl text-white/70">
-              Join 25,000+ subscribers receiving private flash sales, product drops and luxury bundles.
+              Join 25,000+ subscribers receiving private flash sales, product drops and luxury
+              bundles.
             </p>
             <form
               onSubmit={(e) => e.preventDefault()}
