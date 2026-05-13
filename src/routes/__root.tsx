@@ -98,6 +98,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "NovaMarket" },
+      { name: "description", content: "A premium, futuristic landing page for a digital marketplace selling AI tools, subscriptions, courses, and digital products." },
+      { property: "og:description", content: "A premium, futuristic landing page for a digital marketplace selling AI tools, subscriptions, courses, and digital products." },
+      { name: "twitter:description", content: "A premium, futuristic landing page for a digital marketplace selling AI tools, subscriptions, courses, and digital products." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/a7164cdb-9594-4340-8ab8-048616942ac0/id-preview-fbe451e1--82870bab-05e8-43ea-98b3-8014d3d9f142.lovable.app-1778667183291.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/a7164cdb-9594-4340-8ab8-048616942ac0/id-preview-fbe451e1--82870bab-05e8-43ea-98b3-8014d3d9f142.lovable.app-1778667183291.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
