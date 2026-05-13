@@ -42,9 +42,7 @@ function NotFoundComponent() {
 }
 
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
-  if (import.meta.env.DEV) {
-    console.error(error);
-  }
+  console.error(error);
   const router = useRouter();
 
   return (
