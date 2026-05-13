@@ -139,9 +139,13 @@ export function CartDrawer() {
                     <span className="text-gradient">${cart.subtotal.toFixed(2)}</span>
                   </div>
                 </div>
-                <button className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary via-accent to-secondary px-6 py-3.5 text-sm font-semibold glow-primary transition hover:scale-[1.02]">
+                <Link
+                  to="/checkout"
+                  onClick={cart.close}
+                  className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary via-accent to-secondary px-6 py-3.5 text-sm font-semibold glow-primary transition hover:scale-[1.02]"
+                >
                   Checkout <ArrowRight className="h-4 w-4" />
-                </button>
+                </Link>
                 <button
                   onClick={cart.clear}
                   className="mt-2 w-full rounded-xl px-4 py-2 text-xs text-white/50 hover:text-white"

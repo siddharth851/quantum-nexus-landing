@@ -115,9 +115,12 @@ function CartPage() {
                     <span className="text-gradient">${cart.subtotal.toFixed(2)}</span>
                   </div>
                 </div>
-                <button className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary via-accent to-secondary px-6 py-3.5 text-sm font-semibold glow-primary">
+                <Link
+                  to="/checkout"
+                  className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary via-accent to-secondary px-6 py-3.5 text-sm font-semibold glow-primary"
+                >
                   Checkout <ArrowRight className="h-4 w-4" />
-                </button>
+                </Link>
               </aside>
             </div>
           )}

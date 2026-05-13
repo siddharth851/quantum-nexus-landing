@@ -15,10 +15,13 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ProductsRouteImport } from './routes/products'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProductSlugRouteImport } from './routes/product.$slug'
+import { Route as CheckoutSuccessRouteImport } from './routes/checkout.success'
+import { Route as CheckoutFailedRouteImport } from './routes/checkout.failed'
 import { Route as CategorySlugRouteImport } from './routes/category.$slug'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard.index'
@@ -57,6 +60,11 @@ const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
   path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CheckoutRoute = CheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CartRoute = CartRouteImport.update({
   id: '/cart',
   path: '/cart',
@@ -75,6 +83,16 @@ const ProductSlugRoute = ProductSlugRouteImport.update({
   id: '/product/$slug',
   path: '/product/$slug',
   getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutSuccessRoute = CheckoutSuccessRouteImport.update({
+  id: '/success',
+  path: '/success',
+  getParentRoute: () => CheckoutRoute,
+} as any)
+const CheckoutFailedRoute = CheckoutFailedRouteImport.update({
+  id: '/failed',
+  path: '/failed',
+  getParentRoute: () => CheckoutRoute,
 } as any)
 const CategorySlugRoute = CategorySlugRouteImport.update({
   id: '/category/$slug',
@@ -120,6 +138,7 @@ const AuthenticatedDashboardOrdersRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/products': typeof ProductsRoute
@@ -128,6 +147,8 @@ export interface FileRoutesByFullPath {
   '/wishlist': typeof WishlistRoute
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/category/$slug': typeof CategorySlugRoute
+  '/checkout/failed': typeof CheckoutFailedRoute
+  '/checkout/success': typeof CheckoutSuccessRoute
   '/product/$slug': typeof ProductSlugRoute
   '/dashboard/orders': typeof AuthenticatedDashboardOrdersRoute
   '/dashboard/purchases': typeof AuthenticatedDashboardPurchasesRoute
@@ -138,6 +159,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/products': typeof ProductsRoute
@@ -145,6 +167,8 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/wishlist': typeof WishlistRoute
   '/category/$slug': typeof CategorySlugRoute
+  '/checkout/failed': typeof CheckoutFailedRoute
+  '/checkout/success': typeof CheckoutSuccessRoute
   '/product/$slug': typeof ProductSlugRoute
   '/dashboard/orders': typeof AuthenticatedDashboardOrdersRoute
   '/dashboard/purchases': typeof AuthenticatedDashboardPurchasesRoute
@@ -157,6 +181,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/products': typeof ProductsRoute
@@ -165,6 +190,8 @@ export interface FileRoutesById {
   '/wishlist': typeof WishlistRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/category/$slug': typeof CategorySlugRoute
+  '/checkout/failed': typeof CheckoutFailedRoute
+  '/checkout/success': typeof CheckoutSuccessRoute
   '/product/$slug': typeof ProductSlugRoute
   '/_authenticated/dashboard/orders': typeof AuthenticatedDashboardOrdersRoute
   '/_authenticated/dashboard/purchases': typeof AuthenticatedDashboardPurchasesRoute
@@ -177,6 +204,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/cart'
+    | '/checkout'
     | '/forgot-password'
     | '/login'
     | '/products'
@@ -185,6 +213,8 @@ export interface FileRouteTypes {
     | '/wishlist'
     | '/dashboard'
     | '/category/$slug'
+    | '/checkout/failed'
+    | '/checkout/success'
     | '/product/$slug'
     | '/dashboard/orders'
     | '/dashboard/purchases'
@@ -195,6 +225,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/cart'
+    | '/checkout'
     | '/forgot-password'
     | '/login'
     | '/products'
@@ -202,6 +233,8 @@ export interface FileRouteTypes {
     | '/signup'
     | '/wishlist'
     | '/category/$slug'
+    | '/checkout/failed'
+    | '/checkout/success'
     | '/product/$slug'
     | '/dashboard/orders'
     | '/dashboard/purchases'
@@ -213,6 +246,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/cart'
+    | '/checkout'
     | '/forgot-password'
     | '/login'
     | '/products'
@@ -221,6 +255,8 @@ export interface FileRouteTypes {
     | '/wishlist'
     | '/_authenticated/dashboard'
     | '/category/$slug'
+    | '/checkout/failed'
+    | '/checkout/success'
     | '/product/$slug'
     | '/_authenticated/dashboard/orders'
     | '/_authenticated/dashboard/purchases'
@@ -233,6 +269,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   CartRoute: typeof CartRoute
+  CheckoutRoute: typeof CheckoutRouteWithChildren
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
   ProductsRoute: typeof ProductsRoute
@@ -287,6 +324,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/checkout': {
+      id: '/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof CheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/cart': {
       id: '/cart'
       path: '/cart'
@@ -314,6 +358,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/product/$slug'
       preLoaderRoute: typeof ProductSlugRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/checkout/success': {
+      id: '/checkout/success'
+      path: '/success'
+      fullPath: '/checkout/success'
+      preLoaderRoute: typeof CheckoutSuccessRouteImport
+      parentRoute: typeof CheckoutRoute
+    }
+    '/checkout/failed': {
+      id: '/checkout/failed'
+      path: '/failed'
+      fullPath: '/checkout/failed'
+      preLoaderRoute: typeof CheckoutFailedRouteImport
+      parentRoute: typeof CheckoutRoute
     }
     '/category/$slug': {
       id: '/category/$slug'
@@ -401,10 +459,25 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
   AuthenticatedRouteChildren,
 )
 
+interface CheckoutRouteChildren {
+  CheckoutFailedRoute: typeof CheckoutFailedRoute
+  CheckoutSuccessRoute: typeof CheckoutSuccessRoute
+}
+
+const CheckoutRouteChildren: CheckoutRouteChildren = {
+  CheckoutFailedRoute: CheckoutFailedRoute,
+  CheckoutSuccessRoute: CheckoutSuccessRoute,
+}
+
+const CheckoutRouteWithChildren = CheckoutRoute._addFileChildren(
+  CheckoutRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   CartRoute: CartRoute,
+  CheckoutRoute: CheckoutRouteWithChildren,
   ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
   ProductsRoute: ProductsRoute,
