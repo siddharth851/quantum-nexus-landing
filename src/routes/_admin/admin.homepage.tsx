@@ -48,7 +48,7 @@ function AdminHomepage() {
     const s = data[key];
     if (!s) return;
     const { error } = await supabase.from("homepage_content").upsert(
-      { section: s.section, enabled: s.enabled, payload: s.payload },
+      { section: s.section, enabled: s.enabled, payload: s.payload as never },
       { onConflict: "section" },
     );
     if (error) return toast.error(error.message);
