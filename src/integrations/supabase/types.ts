@@ -21,6 +21,7 @@ export type Database = {
           gradient: string | null
           icon: string | null
           id: string
+          image_url: string | null
           name: string
           slug: string
         }
@@ -30,6 +31,7 @@ export type Database = {
           gradient?: string | null
           icon?: string | null
           id?: string
+          image_url?: string | null
           name: string
           slug: string
         }
@@ -39,6 +41,7 @@ export type Database = {
           gradient?: string | null
           icon?: string | null
           id?: string
+          image_url?: string | null
           name?: string
           slug?: string
         }
@@ -125,6 +128,33 @@ export type Database = {
           min_order_amount?: number
           usage_limit?: number | null
           used_count?: number
+        }
+        Relationships: []
+      }
+      homepage_content: {
+        Row: {
+          created_at: string
+          enabled: boolean
+          id: string
+          payload: Json
+          section: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          payload?: Json
+          section: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          payload?: Json
+          section?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -273,6 +303,7 @@ export type Database = {
           features: Json
           gradient: string
           id: string
+          image_url: string | null
           in_stock: boolean
           initials: string
           is_new: boolean
@@ -284,6 +315,7 @@ export type Database = {
           slug: string
           tags: string[]
           trending: boolean
+          visible: boolean
         }
         Insert: {
           badge?: string | null
@@ -295,6 +327,7 @@ export type Database = {
           features?: Json
           gradient: string
           id?: string
+          image_url?: string | null
           in_stock?: boolean
           initials: string
           is_new?: boolean
@@ -306,6 +339,7 @@ export type Database = {
           slug: string
           tags?: string[]
           trending?: boolean
+          visible?: boolean
         }
         Update: {
           badge?: string | null
@@ -317,6 +351,7 @@ export type Database = {
           features?: Json
           gradient?: string
           id?: string
+          image_url?: string | null
           in_stock?: boolean
           initials?: string
           is_new?: boolean
@@ -328,6 +363,7 @@ export type Database = {
           slug?: string
           tags?: string[]
           trending?: boolean
+          visible?: boolean
         }
         Relationships: [
           {
@@ -347,6 +383,7 @@ export type Database = {
           display_name: string | null
           email: string | null
           id: string
+          status: string
           updated_at: string
           user_id: string
         }
@@ -357,6 +394,7 @@ export type Database = {
           display_name?: string | null
           email?: string | null
           id?: string
+          status?: string
           updated_at?: string
           user_id: string
         }
@@ -367,6 +405,7 @@ export type Database = {
           display_name?: string | null
           email?: string | null
           id?: string
+          status?: string
           updated_at?: string
           user_id?: string
         }
@@ -413,6 +452,51 @@ export type Database = {
           },
         ]
       }
+      site_settings: {
+        Row: {
+          created_at: string
+          id: string
+          key: string
+          updated_at: string
+          value: Json
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          key: string
+          updated_at?: string
+          value?: Json
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          key?: string
+          updated_at?: string
+          value?: Json
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_settings: {
         Row: {
           created_at: string
@@ -451,10 +535,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "moderator" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -581,6 +671,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "moderator", "user"],
+    },
   },
 } as const
