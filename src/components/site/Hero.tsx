@@ -34,23 +34,26 @@ export function Hero() {
           >
             <div className="inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 text-xs font-medium text-white/80">
               <Sparkles className="h-3.5 w-3.5 text-secondary" />
-              The future of digital commerce is here
+              {eyebrow}
             </div>
-            <h1 className="mt-6 text-5xl font-bold leading-[1.05] tracking-tight md:text-6xl lg:text-7xl">
-              Premium <span className="text-gradient">AI Tools</span> &<br />
-              Digital Products <span className="text-gradient">Marketplace</span>
-            </h1>
-            <p className="mt-6 max-w-xl text-lg text-white/70">
-              Unlock 10,000+ premium AI tools, subscriptions, courses and digital products at the
-              lowest prices. Cinematic experience. Instant access. Lifetime value.
-            </p>
+            {typeof p?.title === "string" && p.title.trim() ? (
+              <h1 className="mt-6 text-5xl font-bold leading-[1.05] tracking-tight md:text-6xl lg:text-7xl">
+                <span className="text-gradient">{title}</span>
+              </h1>
+            ) : (
+              <h1 className="mt-6 text-5xl font-bold leading-[1.05] tracking-tight md:text-6xl lg:text-7xl">
+                Premium <span className="text-gradient">AI Tools</span> &<br />
+                Digital Products <span className="text-gradient">Marketplace</span>
+              </h1>
+            )}
+            <p className="mt-6 max-w-xl text-lg text-white/70">{subtitle}</p>
             <div className="mt-8 flex flex-wrap gap-4">
               <button className="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-primary via-accent to-secondary px-6 py-3.5 text-sm font-semibold text-white glow-primary transition hover:scale-[1.03]">
-                Explore Marketplace
+                {ctaPrimary}
                 <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
               </button>
               <button className="inline-flex items-center gap-2 rounded-xl glass-strong px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-white/10">
-                <PlayCircle className="h-4 w-4" /> Watch Demo
+                <PlayCircle className="h-4 w-4" /> {ctaSecondary}
               </button>
             </div>
             <div className="mt-10 flex flex-wrap items-center gap-6">
