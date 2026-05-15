@@ -1,6 +1,7 @@
-import { Sparkles, Zap, Tag, Gift } from "lucide-react";
+import { Sparkles, Zap, Tag, Gift, type LucideIcon } from "lucide-react";
+import { useHomepageSection } from "@/lib/homepage-cms";
 
-const items = [
+const defaults: { icon: LucideIcon; text: string }[] = [
   { icon: Zap, text: "Flash Sale — Up to 80% OFF on AI Tools" },
   { icon: Sparkles, text: "New: GPT-5 Pro, Midjourney v7, Claude Opus bundles" },
   { icon: Tag, text: "Limited time: Lifetime subscriptions from $9" },
@@ -8,6 +9,22 @@ const items = [
 ];
 
 export function AnnouncementBar() {
+  const section = useHomepageSection("announcement");
+  if (section && section.enabled === false) return null;
+
+  const payload = section?.payload ?? {};
+  const customText = typeof payload.text === "string" ? payload.text.trim() : "";
+  const customItems = Array.isArray(payload.items)
+    ? (payload.items as unknown[]).filter((x): x is string => typeof x === "string" && x.length > 0)
+    : [];
+
+  const items =
+    customItems.length > 0
+      ? customItems.map((t, i) => ({ icon: defaults[i % defaults.length].icon, text: t }))
+      : customText
+        ? [{ icon: Sparkles, text: customText }]
+        : defaults;
+
   const loop = [...items, ...items, ...items];
   return (
     <div className="relative overflow-hidden border-b border-white/10 bg-gradient-to-r from-primary/30 via-accent/20 to-secondary/30">
