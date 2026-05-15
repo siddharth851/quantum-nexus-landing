@@ -14,6 +14,7 @@ import { FAQ } from "@/components/site/FAQ";
 import { Newsletter } from "@/components/site/Newsletter";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFab } from "@/components/site/WhatsAppFab";
+import { useHomepageContent, sectionEnabled } from "@/lib/homepage-cms";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -36,24 +37,26 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const { data: cms } = useHomepageContent();
+  const on = (k: string) => sectionEnabled(cms, k);
   return (
     <div className="relative min-h-screen text-foreground">
       <AuroraBackground />
       <CursorGlow />
-      <AnnouncementBar />
+      {on("announcement") && <AnnouncementBar />}
       <Navbar />
       <main>
-        <Hero />
-        <Stats />
-        <Categories />
-        <FeaturedProducts />
-        <FlashSale />
-        <WhyChooseUs />
-        <Testimonials />
-        <FAQ />
-        <Newsletter />
+        {on("hero") && <Hero />}
+        {on("stats") && <Stats />}
+        {on("categories") && <Categories />}
+        {on("featured_products") && <FeaturedProducts />}
+        {on("flash_sale") && <FlashSale />}
+        {on("why_choose_us") && <WhyChooseUs />}
+        {on("testimonials") && <Testimonials />}
+        {on("faq") && <FAQ />}
+        {on("newsletter") && <Newsletter />}
       </main>
-      <Footer />
+      {on("footer") && <Footer />}
       <WhatsAppFab />
     </div>
   );
