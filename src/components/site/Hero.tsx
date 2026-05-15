@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { ArrowRight, PlayCircle, Shield, Star, Zap, Sparkles } from "lucide-react";
 import { Particles } from "./Particles";
+import { useHomepageSection, getText } from "@/lib/homepage-cms";
 
 const trust = [
   { icon: Shield, label: "Secure Checkout" },
@@ -9,6 +10,17 @@ const trust = [
 ];
 
 export function Hero() {
+  const section = useHomepageSection("hero");
+  const p = section?.payload;
+  const eyebrow = getText(p, "eyebrow", "The future of digital commerce is here");
+  const title = getText(p, "title", "Premium AI Tools & Digital Products Marketplace");
+  const subtitle = getText(
+    p,
+    "subtitle",
+    "Unlock 10,000+ premium AI tools, subscriptions, courses and digital products at the lowest prices. Cinematic experience. Instant access. Lifetime value.",
+  );
+  const ctaPrimary = getText(p, "cta_primary", "Explore Marketplace");
+  const ctaSecondary = getText(p, "cta_secondary", "Watch Demo");
   return (
     <section id="home" className="relative pt-10 pb-24">
       <Particles count={36} />
