@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Flame, Zap } from "lucide-react";
+import { useHomepageSection, getText } from "@/lib/homepage-cms";
 
-function useCountdown() {
+function useCountdown(target: number) {
   const [t, setT] = useState({ h: 0, m: 0, s: 0 });
   useEffect(() => {
-    const target = Date.now() + 1000 * 60 * 60 * 23 + 1000 * 60 * 47;
     const tick = () => {
       const diff = Math.max(0, target - Date.now());
       const h = Math.floor(diff / 3.6e6);
@@ -16,12 +16,31 @@ function useCountdown() {
     tick();
     const id = setInterval(tick, 1000);
     return () => clearInterval(id);
-  }, []);
+  }, [target]);
   return t;
 }
 
 export function FlashSale() {
-  const t = useCountdown();
+  const section = useHomepageSection("flash_sale");
+  if (section && section.enabled === false) return null;
+
+  const p = section?.payload;
+  const endsAtRaw = typeof p?.ends_at === "string" ? p.ends_at : "";
+  const parsed = endsAtRaw ? Date.parse(endsAtRaw) : NaN;
+  const target = Number.isFinite(parsed) && parsed > Date.now()
+    ? parsed
+    : Date.now() + 1000 * 60 * 60 * 23 + 1000 * 60 * 47;
+
+  const t = useCountdown(target);
+  const badge = getText(p, "badge", "FLASH SALE LIVE");
+  const title = getText(p, "title", "Up to 80% OFF");
+  const subtitle = getText(
+    p,
+    "subtitle",
+    "Premium AI tools, streaming, courses and design apps — at the lowest prices ever offered.",
+  );
+  const cta = getText(p, "cta", "Shop the Sale");
+
   const cells = [
     { label: "Hours", v: t.h },
     { label: "Minutes", v: t.m },
@@ -42,19 +61,14 @@ export function FlashSale() {
           <div className="relative grid items-center gap-8 md:grid-cols-2">
             <div>
               <div className="inline-flex items-center gap-2 rounded-full bg-destructive/20 px-3 py-1 text-xs font-bold text-destructive">
-                <Flame className="h-3.5 w-3.5" /> FLASH SALE LIVE
+                <Flame className="h-3.5 w-3.5" /> {badge}
               </div>
               <h2 className="mt-4 text-4xl font-bold leading-tight md:text-5xl">
-                Up to <span className="text-gradient">80% OFF</span>
-                <br />
-                everything tonight only.
+                <span className="text-gradient">{title}</span>
               </h2>
-              <p className="mt-4 text-white/70">
-                Premium AI tools, streaming, courses and design apps — at the lowest prices ever
-                offered.
-              </p>
+              <p className="mt-4 text-white/70">{subtitle}</p>
               <button className="mt-6 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-primary via-accent to-secondary px-6 py-3 text-sm font-semibold glow-primary transition hover:scale-105">
-                <Zap className="h-4 w-4" /> Shop the Sale
+                <Zap className="h-4 w-4" /> {cta}
               </button>
             </div>
             <div className="grid grid-cols-3 gap-3">
