@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import {
   Star,
   Zap,
-  ShoppingCart,
+  
   Heart,
   Check,
   ArrowLeft,
