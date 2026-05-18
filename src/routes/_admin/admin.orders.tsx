@@ -183,8 +183,8 @@ function AdminOrders() {
               <Info label="Tax" value={`${view.currency} ${Number(view.tax).toFixed(2)}`} />
               <Info label="Total" value={`${view.currency} ${Number(view.total).toFixed(2)}`} />
               <Info label="Coupon" value={view.coupon_code ?? "—"} />
-              <Info label="Gateway" value={view.payment_method ?? "—"} />
-              <Info label="Transaction" value={view.gateway_payment_id ?? view.transaction_id ?? "—"} />
+              <Info label="Method" value={view.payment_method ?? "—"} />
+              <Info label="Payment status" value={view.payment_status} />
             </div>
             <div className="mt-5">
               <p className="mb-2 text-xs uppercase tracking-widest text-white/50">Items</p>
