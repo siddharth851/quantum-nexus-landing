@@ -23,6 +23,8 @@ import { ProductGridSkeleton } from "@/components/site/ProductSkeleton";
 import { discountPercent, fetchProductBySlug, fetchRelatedProducts } from "@/lib/products";
 import { useCart } from "@/store/cart";
 import { useWishlist } from "@/store/wishlist";
+import { useAuth } from "@/hooks/use-auth";
+import { buildProductMessage, waLink, TYPICAL_REPLY } from "@/lib/whatsapp";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export const Route = createFileRoute("/product/$slug")({
