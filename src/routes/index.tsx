@@ -53,8 +53,10 @@ function Index() {
         {on("categories") && <Categories />}
         {on("featured_products") && <FeaturedProducts />}
         {on("flash_sale") && <FlashSale />}
+        <TrustStrip />
         {on("why_choose_us") && <WhyChooseUs />}
         {on("testimonials") && <Testimonials />}
+        <TelegramCommunity />
         {on("faq") && <FAQ />}
         {on("newsletter") && <Newsletter />}
       </main>
