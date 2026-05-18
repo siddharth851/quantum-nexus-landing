@@ -14,6 +14,8 @@ import { FAQ } from "@/components/site/FAQ";
 import { Newsletter } from "@/components/site/Newsletter";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFab } from "@/components/site/WhatsAppFab";
+import { TelegramCommunity } from "@/components/site/TelegramCommunity";
+import { TrustStrip } from "@/components/site/TrustStrip";
 import { useHomepageContent, sectionEnabled } from "@/lib/homepage-cms";
 
 export const Route = createFileRoute("/")({
@@ -51,8 +53,10 @@ function Index() {
         {on("categories") && <Categories />}
         {on("featured_products") && <FeaturedProducts />}
         {on("flash_sale") && <FlashSale />}
+        <TrustStrip />
         {on("why_choose_us") && <WhyChooseUs />}
         {on("testimonials") && <Testimonials />}
+        <TelegramCommunity />
         {on("faq") && <FAQ />}
         {on("newsletter") && <Newsletter />}
       </main>

@@ -1,37 +1,36 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState, useMemo } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { ArrowRight, ShieldCheck, Lock, Tag, Loader2, CheckCircle2, CreditCard, Sparkles } from "lucide-react";
+import {
+  ArrowRight, ShieldCheck, Lock, Tag, Loader2, CheckCircle2, Sparkles, MessageCircle, Clock, Zap,
+} from "lucide-react";
 import { toast } from "sonner";
 import { AuroraBackground } from "@/components/site/AuroraBackground";
 import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Footer";
 import { useCart } from "@/store/cart";
 import { useAuth } from "@/hooks/use-auth";
-import { validateCoupon, createOrder, verifyRazorpayPayment } from "@/lib/checkout.functions";
-import { loadRazorpay, loadCashfree } from "@/lib/payment-sdk";
+import { validateCoupon, createWhatsappOrder } from "@/lib/checkout.functions";
+import { buildCartMessage, waLink, TYPICAL_REPLY, SUPPORT_HOURS } from "@/lib/whatsapp";
 
 export const Route = createFileRoute("/checkout")({
   component: CheckoutPage,
-  head: () => ({ meta: [{ title: "Checkout — NovaMarket" }] }),
+  head: () => ({ meta: [{ title: "WhatsApp Checkout — NovaMarket" }] }),
 });
-
-type Provider = "razorpay" | "cashfree";
 
 function CheckoutPage() {
   const cart = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
   const validate = useServerFn(validateCoupon);
-  const create = useServerFn(createOrder);
-  const verifyRzp = useServerFn(verifyRazorpayPayment);
+  const create = useServerFn(createWhatsappOrder);
 
   const [name, setName] = useState(user?.user_metadata?.display_name ?? "");
   const [email, setEmail] = useState(user?.email ?? "");
   const [country, setCountry] = useState("India");
+  const [notes, setNotes] = useState("");
   const [coupon, setCoupon] = useState("");
   const [applied, setApplied] = useState<{ code: string; discount: number } | null>(null);
-  const [provider, setProvider] = useState<Provider>("razorpay");
   const [busy, setBusy] = useState(false);
   const [couponBusy, setCouponBusy] = useState(false);
 
@@ -49,11 +48,8 @@ function CheckoutPage() {
         <div className="mx-auto mt-16 max-w-md rounded-3xl glass-strong p-8 text-center">
           <Lock className="mx-auto h-10 w-10 text-secondary" />
           <h2 className="mt-3 text-2xl font-bold">Sign in to checkout</h2>
-          <p className="mt-1 text-sm text-white/60">You need an account to complete your purchase.</p>
-          <Link
-            to="/login"
-            className="mt-5 inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-primary to-accent px-5 py-2.5 text-sm font-semibold glow-primary"
-          >
+          <p className="mt-1 text-sm text-white/60">You need an account to place a WhatsApp order.</p>
+          <Link to="/login" className="mt-5 inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-primary to-accent px-5 py-2.5 text-sm font-semibold glow-primary">
             Continue to login <ArrowRight className="ml-2 h-4 w-4" />
           </Link>
         </div>
@@ -93,82 +89,30 @@ function CheckoutPage() {
     }
   }
 
-  async function pay() {
+  async function placeOrder() {
     setBusy(true);
     try {
       const res = await create({
         data: {
           items: cart.items,
           couponCode: applied?.code,
-          provider,
           contactName: name,
           contactEmail: email,
           country,
+          notes: notes || undefined,
         },
       });
-      if (!res.configured) {
-        toast.error(res.message ?? `${provider} not configured yet`);
-        navigate({ to: "/checkout/failed", search: { order: res.order.id } });
-        return;
-      }
-
-      if (res.provider === "razorpay") {
-        await loadRazorpay();
-        if (!window.Razorpay) throw new Error("Razorpay SDK failed to load");
-        const rzp = new window.Razorpay({
-          key: res.keyId,
-          amount: Math.round(res.order.total * 100),
-          currency: "INR",
-          name: "NovaMarket",
-          description: res.order.order_number,
-          order_id: res.gatewayOrderId,
-          prefill: { name, email },
-          theme: { color: "#7c3aed" },
-          handler: async (resp: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) => {
-            try {
-              await verifyRzp({
-                data: {
-                  orderId: res.order.id,
-                  razorpay_order_id: resp.razorpay_order_id,
-                  razorpay_payment_id: resp.razorpay_payment_id,
-                  razorpay_signature: resp.razorpay_signature,
-                },
-              });
-              cart.clear();
-              toast.success("Payment successful!");
-              navigate({ to: "/checkout/success", search: { order: res.order.id } });
-            } catch (e) {
-              toast.error((e as Error).message);
-              navigate({ to: "/checkout/failed", search: { order: res.order.id } });
-            }
-          },
-          modal: {
-            ondismiss: () => {
-              toast.message("Payment cancelled");
-              setBusy(false);
-            },
-          },
-        });
-        rzp.open();
-        return;
-      }
-
-      // Cashfree
-      await loadCashfree(res.mode === "live" ? "live" : "sandbox");
-      if (!window.Cashfree) throw new Error("Cashfree SDK failed to load");
-      const cashfree = window.Cashfree({ mode: res.mode === "live" ? "production" : "sandbox" });
-      const result = await cashfree.checkout({
-        paymentSessionId: res.paymentSessionId!,
-        redirectTarget: "_modal",
-      });
-      if (result.error) {
-        toast.error(result.error.message);
-        navigate({ to: "/checkout/failed", search: { order: res.order.id } });
-      } else {
-        cart.clear();
-        toast.success("Payment processed");
-        navigate({ to: "/checkout/success", search: { order: res.order.id } });
-      }
+      const msg = buildCartMessage(
+        cart.items.map((i) => ({ id: i.id, name: i.name, qty: i.qty, price: i.price })),
+        total,
+        res.order.order_number,
+        { name, email },
+      );
+      // Open WhatsApp
+      window.open(waLink(msg), "_blank", "noopener");
+      cart.clear();
+      toast.success("Order created — continue on WhatsApp");
+      navigate({ to: "/checkout/success", search: { order: res.order.id } });
     } catch (e) {
       toast.error((e as Error).message);
     } finally {
@@ -180,9 +124,11 @@ function CheckoutPage() {
     <Shell>
       <div className="mx-auto max-w-6xl px-4 py-10">
         <h1 className="text-4xl font-bold">
-          Secure <span className="text-gradient">Checkout</span>
+          WhatsApp <span className="text-gradient">Checkout</span>
         </h1>
-        <p className="mt-1 text-sm text-white/60">256-bit SSL encrypted • PCI-DSS compliant</p>
+        <p className="mt-1 text-sm text-white/60">
+          Place your order and complete the purchase securely with our team on WhatsApp.
+        </p>
 
         <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_400px]">
           {/* LEFT */}
@@ -192,29 +138,39 @@ function CheckoutPage() {
                 <Input label="Full name" value={name} onChange={setName} />
                 <Input label="Email address" value={email} onChange={setEmail} type="email" />
                 <Input label="Country" value={country} onChange={setCountry} className="sm:col-span-2" />
+                <label className="block sm:col-span-2">
+                  <span className="text-xs font-medium text-white/60">Notes for our team (optional)</span>
+                  <textarea
+                    value={notes}
+                    onChange={(e) => setNotes(e.target.value)}
+                    rows={3}
+                    placeholder="Anything we should know about your order…"
+                    className="mt-1 w-full rounded-xl glass px-3 py-2.5 text-sm outline-none ring-primary/40 focus:ring-2"
+                  />
+                </label>
               </div>
             </Section>
 
-            <Section title="Payment method" icon={<CreditCard className="h-4 w-4 text-secondary" />}>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <ProviderCard
-                  active={provider === "razorpay"}
-                  onClick={() => setProvider("razorpay")}
-                  title="Razorpay"
-                  desc="UPI, Cards, Wallets, Net Banking"
-                  badge="Popular"
-                />
-                <ProviderCard
-                  active={provider === "cashfree"}
-                  onClick={() => setProvider("cashfree")}
-                  title="Cashfree"
-                  desc="UPI, Cards, Pay Later, EMI"
-                  badge="Fast"
-                />
-              </div>
-              <div className="mt-4 flex items-center gap-3 rounded-xl glass p-3 text-xs text-white/60">
-                <ShieldCheck className="h-4 w-4 text-success" />
-                Your payment is secured with end-to-end encryption. We never store your card details.
+            <Section title="How it works" icon={<MessageCircle className="h-4 w-4 text-emerald-400" />}>
+              <ol className="grid gap-3 sm:grid-cols-3">
+                {[
+                  { n: 1, t: "Click Buy on WhatsApp", d: "Order summary auto-fills in chat" },
+                  { n: 2, t: "Confirm with our team", d: "Payment details shared securely" },
+                  { n: 3, t: "Instant activation", d: "Access delivered to your dashboard" },
+                ].map((s) => (
+                  <li key={s.n} className="rounded-2xl glass p-4">
+                    <div className="grid h-8 w-8 place-items-center rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 text-sm font-bold">
+                      {s.n}
+                    </div>
+                    <p className="mt-3 text-sm font-semibold">{s.t}</p>
+                    <p className="mt-1 text-xs text-white/60">{s.d}</p>
+                  </li>
+                ))}
+              </ol>
+              <div className="mt-4 grid gap-2 sm:grid-cols-3">
+                <Badge icon={<Zap className="h-3.5 w-3.5" />} text="Instant activation" />
+                <Badge icon={<ShieldCheck className="h-3.5 w-3.5" />} text="Manual verification" />
+                <Badge icon={<Clock className="h-3.5 w-3.5" />} text={TYPICAL_REPLY} />
               </div>
             </Section>
 
@@ -277,19 +233,23 @@ function CheckoutPage() {
             </div>
 
             <button
-              onClick={pay}
+              onClick={placeOrder}
               disabled={busy || !name || !email}
-              className="group relative inline-flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-primary via-accent to-secondary px-6 py-3.5 text-sm font-semibold glow-primary transition-all hover:scale-[1.02] disabled:opacity-50"
+              className="group relative inline-flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 px-6 py-3.5 text-sm font-semibold shadow-[0_0_30px_rgba(16,185,129,0.4)] transition-all hover:scale-[1.02] disabled:opacity-50"
             >
               {busy ? (
-                <><Loader2 className="h-4 w-4 animate-spin" /> Processing...</>
+                <><Loader2 className="h-4 w-4 animate-spin" /> Creating order…</>
               ) : (
-                <><Lock className="h-4 w-4" /> Pay ${total.toFixed(2)} securely</>
+                <><MessageCircle className="h-4 w-4" /> Buy on WhatsApp · ${total.toFixed(2)}</>
               )}
             </button>
 
+            <p className="text-center text-[11px] text-white/50">
+              {SUPPORT_HOURS}
+            </p>
+
             <div className="grid grid-cols-3 gap-2 pt-1">
-              {["SSL", "PCI-DSS", "256-bit"].map((b) => (
+              {["Trusted", "Verified", "Instant"].map((b) => (
                 <div key={b} className="rounded-lg glass px-2 py-1.5 text-center text-[10px] font-semibold text-white/60">
                   {b}
                 </div>
@@ -339,30 +299,11 @@ function Input({ label, value, onChange, type = "text", className = "" }: { labe
   );
 }
 
-function ProviderCard({ active, onClick, title, desc, badge }: { active: boolean; onClick: () => void; title: string; desc: string; badge: string }) {
+function Badge({ icon, text }: { icon: React.ReactNode; text: string }) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`group relative overflow-hidden rounded-2xl p-4 text-left transition-all ${
-        active
-          ? "bg-gradient-to-br from-primary/20 via-accent/10 to-secondary/20 ring-2 ring-primary glow-primary"
-          : "glass hover:bg-white/10"
-      }`}
-    >
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-base font-bold">{title}</p>
-          <p className="mt-0.5 text-xs text-white/60">{desc}</p>
-        </div>
-        <span className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-semibold text-white/70">{badge}</span>
-      </div>
-      {active && (
-        <div className="mt-3 flex items-center gap-1 text-xs font-semibold text-secondary">
-          <CheckCircle2 className="h-3 w-3" /> Selected
-        </div>
-      )}
-    </button>
+    <div className="flex items-center gap-2 rounded-xl glass px-3 py-2 text-xs text-white/70">
+      <span className="text-emerald-400">{icon}</span> {text}
+    </div>
   );
 }
 

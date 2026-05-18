@@ -1,28 +1,39 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Search, Eye, X } from "lucide-react";
+import { Search, Eye, X, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 import { PageHeader, Panel, btnGhost, btnPrimary, inputCls, EmptyRow } from "@/components/admin/AdminUI";
+import { waLink } from "@/lib/whatsapp";
 
 export const Route = createFileRoute("/_admin/admin/orders")({
   component: AdminOrders,
 });
 
 type O = Tables<"orders">;
-const STATUSES = ["pending", "completed", "failed", "refunded", "cancelled"] as const;
+const STATUSES = [
+  "pending",
+  "contacted",
+  "payment_confirmed",
+  "activated",
+  "completed",
+  "cancelled",
+] as const;
 
 function statusColor(s: string) {
   switch (s) {
     case "completed":
+    case "activated":
       return "bg-emerald-500/15 text-emerald-300 border-emerald-400/30";
+    case "payment_confirmed":
+      return "bg-cyan-500/15 text-cyan-300 border-cyan-400/30";
+    case "contacted":
+      return "bg-violet-500/15 text-violet-300 border-violet-400/30";
     case "pending":
       return "bg-amber-500/15 text-amber-300 border-amber-400/30";
-    case "failed":
+    case "cancelled":
       return "bg-rose-500/15 text-rose-300 border-rose-400/30";
-    case "refunded":
-      return "bg-blue-500/15 text-blue-300 border-blue-400/30";
     default:
       return "bg-white/10 text-white/60 border-white/20";
   }
@@ -59,12 +70,27 @@ function AdminOrders() {
     [orders, search, filter],
   );
 
-  const updateStatus = async (id: string, status: string) => {
-    const { error } = await supabase.from("orders").update({ status }).eq("id", id);
+  const updateStatus = async (o: O, status: string) => {
+    const patch: Partial<O> = { status };
+    if (status === "payment_confirmed" || status === "activated" || status === "completed") {
+      patch.payment_status = "paid";
+    }
+    const { error } = await supabase.from("orders").update(patch).eq("id", o.id);
     if (error) return toast.error(error.message);
-    toast.success("Status updated");
+
+    // Grant access on activation/completion (idempotent best-effort)
+    if (status === "activated" || status === "completed") {
+      const items = Array.isArray(o.items) ? (o.items as Array<{ id: string }>) : [];
+      if (items.length) {
+        const rows = items
+          .filter((it) => it.id)
+          .map((it) => ({ user_id: o.user_id, product_id: it.id, status: "active" }));
+        if (rows.length) await supabase.from("purchased_products").insert(rows);
+      }
+    }
+    toast.success(`Status set to ${status}`);
     refresh();
-    if (view?.id === id) setView({ ...view, status });
+    if (view?.id === o.id) setView({ ...o, ...patch } as O);
   };
 
   return (
@@ -157,8 +183,8 @@ function AdminOrders() {
               <Info label="Tax" value={`${view.currency} ${Number(view.tax).toFixed(2)}`} />
               <Info label="Total" value={`${view.currency} ${Number(view.total).toFixed(2)}`} />
               <Info label="Coupon" value={view.coupon_code ?? "—"} />
-              <Info label="Gateway" value={view.payment_method ?? "—"} />
-              <Info label="Transaction" value={view.gateway_payment_id ?? view.transaction_id ?? "—"} />
+              <Info label="Method" value={view.payment_method ?? "—"} />
+              <Info label="Payment status" value={view.payment_status} />
             </div>
             <div className="mt-5">
               <p className="mb-2 text-xs uppercase tracking-widest text-white/50">Items</p>
@@ -178,12 +204,22 @@ function AdminOrders() {
               {STATUSES.map((s) => (
                 <button
                   key={s}
-                  onClick={() => updateStatus(view.id, s)}
+                  onClick={() => updateStatus(view, s)}
                   className={`rounded-full border px-3 py-1 text-xs ${view.status === s ? statusColor(s) : "border-white/10 text-white/60 hover:bg-white/10"}`}
                 >
-                  {s}
+                  {s.replace("_", " ")}
                 </button>
               ))}
+            </div>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <a
+                href={waLink(`Hello ${view.contact_name ?? ""} 👋\n\nRegarding your NovaMarket order *${view.order_number}* — total $${Number(view.total).toFixed(2)}.\nHow can we help?`)}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 rounded-xl bg-emerald-500/20 px-3 py-2 text-xs font-semibold text-emerald-300 hover:bg-emerald-500/30"
+              >
+                <MessageCircle className="h-3.5 w-3.5" /> Contact on WhatsApp
+              </a>
               <button onClick={() => setView(null)} className={`${btnPrimary} ml-auto`}>Done</button>
             </div>
           </div>
