@@ -1,28 +1,39 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Search, Eye, X } from "lucide-react";
+import { Search, Eye, X, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 import { PageHeader, Panel, btnGhost, btnPrimary, inputCls, EmptyRow } from "@/components/admin/AdminUI";
+import { waLink } from "@/lib/whatsapp";
 
 export const Route = createFileRoute("/_admin/admin/orders")({
   component: AdminOrders,
 });
 
 type O = Tables<"orders">;
-const STATUSES = ["pending", "completed", "failed", "refunded", "cancelled"] as const;
+const STATUSES = [
+  "pending",
+  "contacted",
+  "payment_confirmed",
+  "activated",
+  "completed",
+  "cancelled",
+] as const;
 
 function statusColor(s: string) {
   switch (s) {
     case "completed":
+    case "activated":
       return "bg-emerald-500/15 text-emerald-300 border-emerald-400/30";
+    case "payment_confirmed":
+      return "bg-cyan-500/15 text-cyan-300 border-cyan-400/30";
+    case "contacted":
+      return "bg-violet-500/15 text-violet-300 border-violet-400/30";
     case "pending":
       return "bg-amber-500/15 text-amber-300 border-amber-400/30";
-    case "failed":
+    case "cancelled":
       return "bg-rose-500/15 text-rose-300 border-rose-400/30";
-    case "refunded":
-      return "bg-blue-500/15 text-blue-300 border-blue-400/30";
     default:
       return "bg-white/10 text-white/60 border-white/20";
   }
