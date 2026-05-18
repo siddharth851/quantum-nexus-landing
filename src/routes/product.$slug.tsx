@@ -11,6 +11,7 @@ import {
   Shield,
   Truck,
   BadgeCheck,
+  MessageCircle,
 } from "lucide-react";
 import { toast } from "sonner";
 import { AuroraBackground } from "@/components/site/AuroraBackground";
