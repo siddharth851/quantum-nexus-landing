@@ -70,12 +70,27 @@ function AdminOrders() {
     [orders, search, filter],
   );
 
-  const updateStatus = async (id: string, status: string) => {
-    const { error } = await supabase.from("orders").update({ status }).eq("id", id);
+  const updateStatus = async (o: O, status: string) => {
+    const patch: Partial<O> = { status };
+    if (status === "payment_confirmed" || status === "activated" || status === "completed") {
+      patch.payment_status = "paid";
+    }
+    const { error } = await supabase.from("orders").update(patch).eq("id", o.id);
     if (error) return toast.error(error.message);
-    toast.success("Status updated");
+
+    // Grant access on activation/completion (idempotent best-effort)
+    if (status === "activated" || status === "completed") {
+      const items = Array.isArray(o.items) ? (o.items as Array<{ id: string }>) : [];
+      if (items.length) {
+        const rows = items
+          .filter((it) => it.id)
+          .map((it) => ({ user_id: o.user_id, product_id: it.id, status: "active" }));
+        if (rows.length) await supabase.from("purchased_products").insert(rows);
+      }
+    }
+    toast.success(`Status set to ${status}`);
     refresh();
-    if (view?.id === id) setView({ ...view, status });
+    if (view?.id === o.id) setView({ ...o, ...patch } as O);
   };
 
   return (
