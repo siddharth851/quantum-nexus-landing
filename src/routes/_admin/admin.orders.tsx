@@ -204,12 +204,22 @@ function AdminOrders() {
               {STATUSES.map((s) => (
                 <button
                   key={s}
-                  onClick={() => updateStatus(view.id, s)}
+                  onClick={() => updateStatus(view, s)}
                   className={`rounded-full border px-3 py-1 text-xs ${view.status === s ? statusColor(s) : "border-white/10 text-white/60 hover:bg-white/10"}`}
                 >
-                  {s}
+                  {s.replace("_", " ")}
                 </button>
               ))}
+            </div>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <a
+                href={waLink(`Hello ${view.contact_name ?? ""} 👋\n\nRegarding your NovaMarket order *${view.order_number}* — total $${Number(view.total).toFixed(2)}.\nHow can we help?`)}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 rounded-xl bg-emerald-500/20 px-3 py-2 text-xs font-semibold text-emerald-300 hover:bg-emerald-500/30"
+              >
+                <MessageCircle className="h-3.5 w-3.5" /> Contact on WhatsApp
+              </a>
               <button onClick={() => setView(null)} className={`${btnPrimary} ml-auto`}>Done</button>
             </div>
           </div>
