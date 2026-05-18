@@ -35,6 +35,7 @@ function ProductPage() {
   const { slug } = Route.useParams();
   const cart = useCart();
   const wishlist = useWishlist();
+  const { user } = useAuth();
 
   const { data: product, isLoading } = useQuery({
     queryKey: ["product", slug],
