@@ -167,6 +167,24 @@ function ProductPage() {
                   </div>
 
                   <div className="mt-6 flex flex-col gap-2 sm:flex-row">
+                    <a
+                      href={waLink(
+                        buildProductMessage(
+                          {
+                            name: product.name,
+                            price: Number(product.discount_price),
+                            id: product.id,
+                            slug: product.slug,
+                          },
+                          { name: user?.user_metadata?.display_name, email: user?.email },
+                        ),
+                      )}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 px-5 py-3 text-sm font-semibold shadow-[0_0_30px_rgba(16,185,129,0.4)]"
+                    >
+                      <MessageCircle className="h-4 w-4" /> Buy on WhatsApp
+                    </a>
                     <button
                       onClick={() => {
                         cart.add(product);
@@ -174,16 +192,7 @@ function ProductPage() {
                       }}
                       className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary via-accent to-secondary px-5 py-3 text-sm font-semibold glow-primary"
                     >
-                      <Zap className="h-4 w-4" /> Get Access Now
-                    </button>
-                    <button
-                      onClick={() => {
-                        cart.add(product);
-                        toast.success("Added to cart");
-                      }}
-                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl glass-strong px-5 py-3 text-sm font-semibold hover:bg-white/10"
-                    >
-                      <ShoppingCart className="h-4 w-4" /> Add to Cart
+                      <Zap className="h-4 w-4" /> Add to Cart
                     </button>
                     <button
                       onClick={() => {
@@ -198,12 +207,16 @@ function ProductPage() {
                       />
                     </button>
                   </div>
+                  <p className="mt-2 inline-flex items-center gap-1.5 text-xs text-emerald-300/80">
+                    <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
+                    Support online · {TYPICAL_REPLY}
+                  </p>
 
                   <div className="mt-6 grid grid-cols-3 gap-2 text-xs">
                     {[
-                      { icon: Truck, label: "Instant delivery" },
-                      { icon: Shield, label: "Secure checkout" },
-                      { icon: BadgeCheck, label: "100% verified" },
+                      { icon: Truck, label: "Instant activation" },
+                      { icon: Shield, label: "Manual verification" },
+                      { icon: BadgeCheck, label: "100% trusted" },
                     ].map((it) => (
                       <div key={it.label} className="flex items-center gap-2 rounded-xl glass p-3">
                         <it.icon className="h-4 w-4 text-secondary" />
