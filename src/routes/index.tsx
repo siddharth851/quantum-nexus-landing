@@ -14,6 +14,8 @@ import { FAQ } from "@/components/site/FAQ";
 import { Newsletter } from "@/components/site/Newsletter";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFab } from "@/components/site/WhatsAppFab";
+import { TelegramCommunity } from "@/components/site/TelegramCommunity";
+import { TrustStrip } from "@/components/site/TrustStrip";
 import { useHomepageContent, sectionEnabled } from "@/lib/homepage-cms";
 
 export const Route = createFileRoute("/")({
