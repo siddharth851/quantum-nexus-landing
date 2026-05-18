@@ -1,54 +1,43 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { CheckCircle2, Download, ArrowRight, Sparkles, Loader2 } from "lucide-react";
+import { CheckCircle2, ArrowRight, Sparkles, Loader2, MessageCircle, Clock, ShieldCheck } from "lucide-react";
 import { z } from "zod";
 import { AuroraBackground } from "@/components/site/AuroraBackground";
 import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Footer";
-import { getOrder, verifyCashfreePayment } from "@/lib/checkout.functions";
-import { useCart } from "@/store/cart";
+import { getOrder } from "@/lib/checkout.functions";
+import { buildCartMessage, waLink, TYPICAL_REPLY } from "@/lib/whatsapp";
 
 const search = z.object({ order: z.string().uuid() });
 
 export const Route = createFileRoute("/checkout/success")({
   validateSearch: search.parse,
   component: SuccessPage,
-  head: () => ({ meta: [{ title: "Order Successful — NovaMarket" }] }),
+  head: () => ({ meta: [{ title: "Order Received — NovaMarket" }] }),
 });
 
 type Order = {
   id: string;
   order_number: string;
   total: number;
-  subtotal: number;
-  discount: number;
-  tax: number;
-  payment_method: string | null;
-  payment_status: string;
+  status: string;
+  contact_email: string | null;
+  contact_name: string | null;
   items: unknown;
 };
 
 function SuccessPage() {
   const { order: orderId } = Route.useSearch();
   const get = useServerFn(getOrder);
-  const verifyCf = useServerFn(verifyCashfreePayment);
-  const cart = useCart();
-  const navigate = useNavigate();
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
       try {
-        let o = (await get({ data: { orderId } })) as Order;
-        // Auto-verify cashfree when redirected back from gateway
-        if (o.payment_method === "cashfree" && o.payment_status !== "paid") {
-          await verifyCf({ data: { orderId } });
-          o = (await get({ data: { orderId } })) as Order;
-        }
+        const o = (await get({ data: { orderId } })) as Order;
         setOrder(o);
-        if (o.payment_status === "paid") cart.clear();
       } finally {
         setLoading(false);
       }
@@ -65,62 +54,42 @@ function SuccessPage() {
       </Shell>
     );
   }
-
-  if (!order || order.payment_status !== "paid") {
+  if (!order) {
     return (
       <Shell>
         <div className="mx-auto mt-16 max-w-md rounded-3xl glass-strong p-8 text-center">
-          <h2 className="text-2xl font-bold">Payment not confirmed</h2>
-          <p className="mt-2 text-sm text-white/60">We couldn't verify this payment yet.</p>
-          <button
-            onClick={() => navigate({ to: "/checkout/failed", search: { order: orderId } })}
-            className="mt-5 rounded-xl bg-gradient-to-r from-primary to-accent px-5 py-2.5 text-sm font-semibold"
-          >
-            View details
-          </button>
+          <h2 className="text-2xl font-bold">Order not found</h2>
+          <Link to="/products" className="mt-5 inline-flex rounded-xl bg-gradient-to-r from-primary to-accent px-5 py-2.5 text-sm font-semibold">
+            Browse marketplace
+          </Link>
         </div>
       </Shell>
     );
   }
 
-  const items = Array.isArray(order.items) ? (order.items as Array<{ name: string; qty: number; price: number }>) : [];
+  const items = Array.isArray(order.items)
+    ? (order.items as Array<{ name: string; qty: number; price: number; id: string }>)
+    : [];
 
-  function downloadInvoice() {
-    if (!order) return;
-    const lines = [
-      `NovaMarket Invoice`,
-      `Order: ${order.order_number}`,
-      `Status: PAID`,
-      ``,
-      ...items.map((i) => `- ${i.name} x${i.qty}  $${(i.price * i.qty).toFixed(2)}`),
-      ``,
-      `Subtotal: $${order.subtotal}`,
-      `Discount: -$${order.discount}`,
-      `Tax: $${order.tax}`,
-      `Total: $${order.total}`,
-    ].join("\n");
-    const blob = new Blob([lines], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${order.order_number}.txt`;
-    a.click();
-    URL.revokeObjectURL(url);
-  }
+  const waMessage = buildCartMessage(
+    items.map((i) => ({ id: i.id, name: i.name, qty: i.qty, price: i.price })),
+    Number(order.total),
+    order.order_number,
+    { name: order.contact_name, email: order.contact_email },
+  );
 
   return (
     <Shell>
-      <Confetti />
       <div className="mx-auto max-w-2xl px-4 py-16">
         <div className="rounded-3xl glass-strong p-8 text-center">
-          <div className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-gradient-to-br from-success/30 to-primary/30 glow-primary">
-            <CheckCircle2 className="h-10 w-10 text-success" />
+          <div className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-gradient-to-br from-emerald-400/40 to-emerald-600/40 shadow-[0_0_40px_rgba(16,185,129,0.5)]">
+            <CheckCircle2 className="h-10 w-10 text-emerald-300" />
           </div>
           <h1 className="mt-5 text-3xl font-bold">
-            Payment <span className="text-gradient">Successful</span>
+            Order <span className="text-gradient">Received</span>
           </h1>
           <p className="mt-1 text-sm text-white/60">
-            Order <span className="font-mono text-white/80">{order.order_number}</span> is confirmed
+            Order <span className="font-mono text-white/80">{order.order_number}</span> · status <span className="font-semibold text-amber-300">{order.status}</span>
           </p>
           <p className="mt-4 text-4xl font-bold text-gradient">${order.total}</p>
 
@@ -135,22 +104,30 @@ function SuccessPage() {
 
           <div className="mt-4 rounded-xl glass p-3 text-left text-xs text-white/70">
             <Sparkles className="mr-2 inline h-3 w-3 text-secondary" />
-            Your products are now available in your dashboard library.
+            Continue on WhatsApp to finalize payment. Our team will manually verify and activate your products within minutes.
+          </div>
+
+          <div className="mt-4 grid gap-2 sm:grid-cols-3">
+            <Pill icon={<Clock className="h-3.5 w-3.5" />} text={TYPICAL_REPLY} />
+            <Pill icon={<ShieldCheck className="h-3.5 w-3.5" />} text="Manual verification" />
+            <Pill icon={<Sparkles className="h-3.5 w-3.5" />} text="Instant activation" />
           </div>
 
           <div className="mt-6 flex flex-wrap justify-center gap-2">
-            <Link
-              to="/dashboard/purchases"
-              className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-primary to-accent px-5 py-2.5 text-sm font-semibold glow-primary"
+            <a
+              href={waLink(waMessage)}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 px-5 py-2.5 text-sm font-semibold shadow-[0_0_30px_rgba(16,185,129,0.4)]"
             >
-              View library <ArrowRight className="h-4 w-4" />
-            </Link>
-            <button
-              onClick={downloadInvoice}
+              <MessageCircle className="h-4 w-4" /> Continue on WhatsApp
+            </a>
+            <Link
+              to="/dashboard/orders"
               className="inline-flex items-center gap-2 rounded-xl glass-strong px-5 py-2.5 text-sm font-semibold hover:bg-white/10"
             >
-              <Download className="h-4 w-4" /> Invoice
-            </button>
+              Track order <ArrowRight className="h-4 w-4" />
+            </Link>
             <Link
               to="/products"
               className="inline-flex items-center gap-2 rounded-xl glass-strong px-5 py-2.5 text-sm font-semibold hover:bg-white/10"
@@ -164,34 +141,10 @@ function SuccessPage() {
   );
 }
 
-function Confetti() {
-  const pieces = Array.from({ length: 60 });
+function Pill({ icon, text }: { icon: React.ReactNode; text: string }) {
   return (
-    <div className="pointer-events-none fixed inset-0 z-50 overflow-hidden">
-      {pieces.map((_, i) => {
-        const colors = ["#7c3aed", "#06b6d4", "#ec4899", "#22c55e", "#f59e0b"];
-        const left = Math.random() * 100;
-        const delay = Math.random() * 0.6;
-        const duration = 2 + Math.random() * 1.8;
-        const color = colors[i % colors.length];
-        return (
-          <span
-            key={i}
-            className="absolute top-[-20px] block h-2 w-2 rounded-sm"
-            style={{
-              left: `${left}%`,
-              background: color,
-              animation: `confetti-fall ${duration}s ${delay}s ease-in forwards`,
-              transform: `rotate(${Math.random() * 360}deg)`,
-            }}
-          />
-        );
-      })}
-      <style>{`
-        @keyframes confetti-fall {
-          to { transform: translateY(110vh) rotate(720deg); opacity: 0; }
-        }
-      `}</style>
+    <div className="flex items-center justify-center gap-2 rounded-xl glass px-3 py-2 text-xs text-white/70">
+      <span className="text-emerald-400">{icon}</span> {text}
     </div>
   );
 }
