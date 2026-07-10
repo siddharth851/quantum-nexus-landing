@@ -1,77 +1,119 @@
 import { motion } from "framer-motion";
-import { ArrowRight, PlayCircle, Shield, Star, Zap, Sparkles } from "lucide-react";
+import { ArrowRight, ShieldCheck, Star, Zap, Sparkles, CheckCircle2 } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { Particles } from "./Particles";
 import { useHomepageSection, getText } from "@/lib/homepage-cms";
 
-const trust = [
-  { icon: Shield, label: "Secure Checkout" },
-  { icon: Zap, label: "Instant Delivery" },
-  { icon: Star, label: "4.9★ Rated" },
+const bullets = [
+  "Instant delivery after verification",
+  "Human-reviewed orders — zero fraud",
+  "Lifetime support on WhatsApp",
 ];
 
 export function Hero() {
   const section = useHomepageSection("hero");
   const p = section?.payload;
-  const eyebrow = getText(p, "eyebrow", "The future of digital commerce is here");
-  const title = getText(p, "title", "Premium AI Tools & Digital Products Marketplace");
+  const eyebrow = getText(p, "eyebrow", "Trusted by 10,000+ creators worldwide");
+  const titleOverride = typeof p?.title === "string" && p.title.trim() ? p.title : null;
   const subtitle = getText(
     p,
     "subtitle",
-    "Unlock 10,000+ premium AI tools, subscriptions, courses and digital products at the lowest prices. Cinematic experience. Instant access. Lifetime value.",
+    "Get premium AI tools, subscriptions and courses at unbeatable prices — delivered in minutes, backed by real humans.",
   );
-  const ctaPrimary = getText(p, "cta_primary", "Explore Marketplace");
-  const ctaSecondary = getText(p, "cta_secondary", "Watch Demo");
+  const ctaPrimary = getText(p, "cta_primary", "Browse Marketplace");
+  const ctaSecondary = getText(p, "cta_secondary", "Talk to us");
+
   return (
-    <section id="home" className="relative pt-10 pb-24">
-      <Particles count={36} />
+    <section id="home" className="relative pt-8 pb-20 md:pt-14 md:pb-28">
+      <Particles count={28} />
       <div className="mx-auto max-w-7xl px-4">
-        <div className="grid items-center gap-12 lg:grid-cols-2">
+        <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_1fr]">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
+            transition={{ duration: 0.6 }}
             className="relative z-10"
           >
-            <div className="inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 text-xs font-medium text-white/80">
+            <div className="inline-flex items-center gap-2 rounded-full glass px-3.5 py-1.5 text-xs font-medium text-white/85">
               <Sparkles className="h-3.5 w-3.5 text-secondary" />
               {eyebrow}
             </div>
-            {typeof p?.title === "string" && p.title.trim() ? (
-              <h1 className="mt-6 text-5xl font-bold leading-[1.05] tracking-tight md:text-6xl lg:text-7xl">
-                <span className="text-gradient">{title}</span>
+
+            {titleOverride ? (
+              <h1 className="mt-5 text-4xl font-bold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl lg:text-[4.25rem]">
+                <span className="text-gradient">{titleOverride}</span>
               </h1>
             ) : (
-              <h1 className="mt-6 text-5xl font-bold leading-[1.05] tracking-tight md:text-6xl lg:text-7xl">
-                Premium <span className="text-gradient">AI Tools</span> &<br />
-                Digital Products <span className="text-gradient">Marketplace</span>
+              <h1 className="mt-5 text-4xl font-bold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl lg:text-[4.25rem]">
+                Premium digital products,
+                <br />
+                <span className="text-gradient">delivered in minutes.</span>
               </h1>
             )}
-            <p className="mt-6 max-w-xl text-lg text-white/70">{subtitle}</p>
-            <div className="mt-8 flex flex-wrap gap-4">
-              <button className="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-primary via-accent to-secondary px-6 py-3.5 text-sm font-semibold text-white glow-primary transition hover:scale-[1.03]">
-                {ctaPrimary}
-                <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
-              </button>
-              <button className="inline-flex items-center gap-2 rounded-xl glass-strong px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-white/10">
-                <PlayCircle className="h-4 w-4" /> {ctaSecondary}
-              </button>
-            </div>
-            <div className="mt-10 flex flex-wrap items-center gap-6">
-              {trust.map((t) => (
-                <div key={t.label} className="flex items-center gap-2 text-sm text-white/70">
-                  <div className="grid h-8 w-8 place-items-center rounded-lg glass">
-                    <t.icon className="h-4 w-4 text-secondary" />
-                  </div>
-                  {t.label}
-                </div>
+
+            <p className="mt-5 max-w-xl text-base leading-relaxed text-white/70 md:text-lg">
+              {subtitle}
+            </p>
+
+            <ul className="mt-6 grid gap-2 text-sm text-white/75">
+              {bullets.map((b) => (
+                <li key={b} className="flex items-center gap-2.5">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                  {b}
+                </li>
               ))}
+            </ul>
+
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              <Link
+                to="/products"
+                className="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-primary via-accent to-secondary px-5 py-3 text-sm font-semibold text-white glow-primary transition hover:scale-[1.02]"
+              >
+                {ctaPrimary}
+                <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
+              </Link>
+              <a
+                href="https://wa.me/10000000000"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 rounded-xl glass-strong px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+              >
+                <ShieldCheck className="h-4 w-4 text-emerald-400" /> {ctaSecondary}
+              </a>
+            </div>
+
+            <div className="mt-8 flex flex-wrap items-center gap-5 border-t border-white/10 pt-6">
+              <div className="flex items-center gap-3">
+                <div className="flex -space-x-2">
+                  {[0, 1, 2, 3].map((i) => (
+                    <div
+                      key={i}
+                      className="h-8 w-8 rounded-full border-2 border-background bg-gradient-to-br from-primary via-accent to-secondary"
+                    />
+                  ))}
+                </div>
+                <div className="text-xs">
+                  <div className="flex items-center gap-1 text-amber-300">
+                    {[0, 1, 2, 3, 4].map((i) => (
+                      <Star key={i} className="h-3.5 w-3.5 fill-current" />
+                    ))}
+                    <span className="ml-1 font-semibold text-white">4.9/5</span>
+                  </div>
+                  <p className="text-white/55">from 2,400+ reviews</p>
+                </div>
+              </div>
+              <div className="hidden h-8 w-px bg-white/10 sm:block" />
+              <div className="flex items-center gap-2 text-xs text-white/60">
+                <Zap className="h-4 w-4 text-secondary" />
+                Avg. delivery time <span className="font-semibold text-white">3.2 min</span>
+              </div>
             </div>
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.9, delay: 0.2 }}
+            transition={{ duration: 0.8, delay: 0.15 }}
             className="relative"
           >
             <div className="absolute -inset-10 -z-10 rounded-[3rem] bg-gradient-to-br from-primary/40 via-accent/30 to-secondary/30 blur-3xl" />
@@ -92,7 +134,7 @@ export function Hero() {
                     +24.8%
                   </div>
                 </div>
-                <div className="grid grid-cols-7 items-end gap-2 h-28">
+                <div className="grid h-28 grid-cols-7 items-end gap-2">
                   {[40, 65, 50, 80, 60, 95, 75].map((h, i) => (
                     <motion.div
                       key={i}
