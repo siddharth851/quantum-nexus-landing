@@ -37,8 +37,9 @@ export function useHomepageContent() {
   });
 
   useEffect(() => {
+    const channelName = `homepage_content_changes_${Math.random().toString(36).slice(2)}`;
     const channel = supabase
-      .channel("homepage_content_changes")
+      .channel(channelName)
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "homepage_content" },
@@ -51,6 +52,7 @@ export function useHomepageContent() {
       supabase.removeChannel(channel);
     };
   }, [qc]);
+
 
   return query;
 }
